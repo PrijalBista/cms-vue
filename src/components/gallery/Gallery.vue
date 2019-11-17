@@ -1,88 +1,140 @@
 <template>
   <div class="content">
     <div class="row">
-      <h4>Gallery&nbsp;&nbsp;<span>Control Panel</span></h4>
-      <router-link to="/gallery/new" class="btn btn-primary ml-auto"
-        >New</router-link
-      >
+      <h4>
+        Gallery&nbsp;&nbsp;
+        <span>Control Panel</span>
+      </h4>
+      <router-link to="/gallery/new" class="btn btn-primary ml-auto">New</router-link>
+    </div>
+    <br />
+    <div class="input-group mr-auto">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <input type="text" class="form-control" placeholder="Search" v-model="search" />
     </div>
     <br />
     <table class="table table-striped">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Date</th>
           <th scope="col">Title</th>
           <th scope="col">Preview</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>2019-11-01</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
+        <tr v-for="photo in search.length>0 ? filtered : photos " :key="photo.id">
+          <th scope="row">{{ photo.id }}</th>
+          <td>
+            <a href="#">{{ photo.title }}</a>
+          </td>
           <td>
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m"
+              :src="`http://localhost/jinmvc/images/${photo.url}`"
               class="img-fluid"
               width="200px"
             />
           </td>
 
           <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
+            <router-link :to="'/gallery/' + photo.id + '/edit'">
+              <i class="far fa-edit"></i>
+            </router-link>
+            <form @submit.prevent="submit(photo)">
               <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>2019-11-02</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m"
-              class="img-fluid"
-              width="200px"
-            />
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>2019-11-03</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            <img
-              src="https://neilpatel.com/wp-content/uploads/2018/10/blog.jpg"
-              class="img-fluid"
-              width="200px"
-            />
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                <a href="#">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
               </button>
             </form>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete {{photo.title}}</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" @click="destroy">Confirm Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script type="text/javascript">
+export default {
+  data() {
+    return {
+      photos: [],
+      photo: {},
+      search: "",
+      filtered: []
+    };
+  },
+  watch: {
+    search() {
+      if (this.search.length > 0) {
+        this.filtered = this.photos.filter(photo => {
+          return photo.title.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
+    }
+  },
+  created() {
+    fetch("http://localhost/jinmvc/photos")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.photos = data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+
+  methods: {
+    submit(photo) {
+      this.photo = photo;
+      $("#warning").modal("show");
+    },
+
+    destroy() {
+      fetch(`http://localhost/jinmvc/photos/destroy/${this.photo.id}`, {
+        method: "POST"
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if ((data.status = 200)) {
+            this.photos = this.photos.filter(photo => {
+              return photo.id !== this.photo.id;
+            });
+            this.filtered = this.filtered.filter(photo => {
+              return photo.id !== this.photo.id;
+            });
+            $("#warning").modal("hide");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .content {
@@ -99,6 +151,13 @@
       border: 0;
       background: none;
     }
+  }
+  .fa-trash-alt {
+    color: #dc3545;
+  }
+  .modal-content,
+  .input-group-prepend {
+    border-radius: 0;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <h5>
-      <img src="./../assets/theGimmickBox.png" width="25px" />
+      <img src="http://localhost/jinmvc/public/dist/theGimmickBox.png" width="25px" />
       &nbsp;
       <span>Gimmick</span>
       Admin
@@ -38,8 +38,8 @@
           <i class="fas fa-envelope"></i>&nbsp;&nbsp;Emails
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
-      </a> -->
-      <router-link to="/vacancy" active-class="active">
+      </a>-->
+      <router-link to="/vacancies" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-briefcase"></i>&nbsp;&nbsp;Vacancy
           <i class="fas fa-chevron-right ml-auto"></i>

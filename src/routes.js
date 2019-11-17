@@ -37,7 +37,8 @@ export const routes = [
   },
   {
     path: "/blogs/:id/edit",
-    component: UpdateBlog
+    component: UpdateBlog,
+    props: true
   },
   // FEEDS
   {
@@ -50,7 +51,8 @@ export const routes = [
   },
   {
     path: "/feeds/:id/edit",
-    component: UpdateFeed
+    component: UpdateFeed,
+    props: true
   },
   //GALLERY
   {
@@ -63,20 +65,22 @@ export const routes = [
   },
   {
     path: "/gallery/:id/edit",
-    component: UpdateGallery
+    component: UpdateGallery,
+    props: true
   },
   //VACANCY
   {
-    path: "/vacancy",
+    path: "/vacancies",
     component: Vacancy
   },
   {
-    path: "/vacancy/new",
+    path: "/vacancies/new",
     component: CreateVacancy
   },
   {
-    path: "/vacancy/:id/edit",
-    component: UpdateVacancy
+    path: "/vacancies/:id/edit",
+    component: UpdateVacancy,
+    props: true
   },
   //CAROUSEL
   {
@@ -89,7 +93,8 @@ export const routes = [
   },
   {
     path: "/carousel/:id/edit",
-    component: UpdateCarousel
+    component: UpdateCarousel,
+    props: true
   },
   //COVER
   {
@@ -98,7 +103,8 @@ export const routes = [
   },
   {
     path: "/covers/:id/edit",
-    component: UpdateCover
+    component: UpdateCover,
+    props: true
   },
   //COVER
   {
@@ -111,7 +117,8 @@ export const routes = [
   },
   {
     path: "/projects/:id/edit",
-    component: UpdateProject
+    component: UpdateProject,
+    props: true
   },
   //ACCOUNT
   {

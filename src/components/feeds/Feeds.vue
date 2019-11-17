@@ -1,10 +1,21 @@
 <template>
   <div class="content">
     <div class="row">
-      <h4>News Feeds&nbsp;&nbsp;<span>Control Panel</span></h4>
-      <router-link to="/feeds/new" class="btn btn-primary ml-auto"
-        >New</router-link
-      >
+      <h4>
+        News Feeds&nbsp;&nbsp;
+        <span>Control Panel</span>
+      </h4>
+
+      <router-link to="/feeds/new" class="btn btn-primary ml-auto">New</router-link>
+    </div>
+    <br />
+    <div class="input-group mr-auto">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <input type="text" class="form-control" placeholder="Search" v-model="search" />
     </div>
     <br />
     <table class="table table-striped">
@@ -18,62 +29,111 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>2019-11-01</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
+        <tr v-for="feed in search.length>0 ? filtered : feeds " :key="feed.id">
+          <th scope="row">{{ feed.id }}</th>
+          <td>{{ feed.created_at }}</td>
           <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
+            <a href="#">{{ feed.title }}</a>
+          </td>
+          <td>
+            <span v-html="feed.content.substring(0, 100) + '...'"></span>
           </td>
 
           <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
+            <router-link :to="'/feeds/' + feed.id + '/edit'">
+              <i class="far fa-edit"></i>
+            </router-link>
+            <form @submit.prevent="submit(feed)">
               <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>2019-11-02</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>2019-11-03</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                <a href="#">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
               </button>
             </form>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete {{feed.title}}</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" @click="destroy">Confirm Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script type="text/javascript">
+export default {
+  data() {
+    return {
+      feeds: [],
+      feed: {},
+      search: "",
+      filtered: []
+    };
+  },
+  watch: {
+    search() {
+      if (this.search.length > 0) {
+        this.filtered = this.feeds.filter(feed => {
+          return feed.title.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
+    }
+  },
+  created() {
+    fetch("http://localhost/jinmvc/feeds")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.feeds = data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+
+  methods: {
+    submit(feed) {
+      this.feed = feed;
+      $("#warning").modal("show");
+    },
+
+    destroy() {
+      fetch(`http://localhost/jinmvc/feeds/destroy/${this.feed.id}`, {
+        method: "POST"
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if ((data.status = 200)) {
+            this.feeds = this.feeds.filter(feed => {
+              return feed.id !== this.feed.id;
+            });
+            this.filtered = this.filtered.filter(feed => {
+              return feed.id !== this.feed.id;
+            });
+            $("#warning").modal("hide");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .content {
@@ -90,6 +150,13 @@
       border: 0;
       background: none;
     }
+  }
+  .fa-trash-alt {
+    color: #dc3545;
+  }
+  .modal-content,
+  .input-group-prepend {
+    border-radius: 0;
   }
 }
 </style>

@@ -29,7 +29,7 @@
         <span>
           <h4>500</h4>Emails
         </span>
-      </div> -->
+      </div>-->
       <div class="panel">
         <i class="fas fa-briefcase"></i>
         <span>

@@ -8,9 +8,9 @@
       <sup>
         <span class="badge badge-danger">10</span>
       </sup>
-    </span> -->
+    </span>-->
     <img
-      src="./../assets/avatar.png"
+      src="http://localhost/jinmvc/public/dist/avatar.png"
       alt="avatar"
       class="dropdown-toggle"
       width="35px"
@@ -25,13 +25,36 @@
         <span>Settings</span>
       </a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="#">
+      <a class="dropdown-item" href="#" @click="logout">
         <i class="fas fa-power-off"></i>
         <span>Logout</span>
       </a>
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  methods: {
+    logout() {
+      fetch("http://localhost/jinmvc/pages/logout", {
+        method: "POST"
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (data.status == 200) {
+            window.location.href = "http://localhost/jinmvc";
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .navbar {

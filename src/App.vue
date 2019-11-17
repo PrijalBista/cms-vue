@@ -39,6 +39,7 @@ export default {
 
 input,
 button,
+.input-group-text,
 .btn {
   border-radius: 0 !important;
 }
@@ -51,7 +52,8 @@ button,
   flex: auto;
 }
 
-i {
+.fas,
+.far {
   font-size: 1.25rem;
 }
 

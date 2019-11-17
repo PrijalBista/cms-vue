@@ -1,26 +1,38 @@
 <template>
   <div class="container-fluid content">
-    <h4>Edit Blog Posts&nbsp;&nbsp;<span>Control Panel</span></h4>
+    <h4>
+      Edit Blog Post&nbsp;&nbsp;
+      <span>Control Panel</span>
+    </h4>
     <br />
     <form @submit.prevent="submit()">
       <div class="form-group">
-        <label for="title"><b>Blog Title</b></label>
+        <label for="title">
+          <b>Blog Title</b>
+        </label>
         <input
           name="title"
           type="text"
+          v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
+          :class="title_error ? 'is-invalid' : ''"
         />
+        <div class="invalid-feedback">Empty Title</div>
         <br />
-        <label for="content"><b>Content</b></label>
+        <label for="content">
+          <b>Content</b>
+        </label>
         <div class="row">
           <div class="col-12">
             <textarea
               class="form-control"
+              :class="content_error ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
+            <div class="invalid-feedback">Empty Content</div>
           </div>
         </div>
       </div>
@@ -43,12 +55,8 @@
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">
-        Save
-      </button>
-      <button type="submit" class="btn btn-danger">
-        Cancel
-      </button>
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
 </template>
@@ -58,28 +66,57 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 let fileReader = new FileReader();
 
 export default {
+  props: ["id"],
   data() {
     return {
       files: [],
+      editor: null,
+      title: "",
       images: [
-        {
-          src:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m",
-          name: "blogpost"
-        },
-        {
-          src:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS1a1rZ_v2kvhYWOs5-xeEhdLkdNYNDDmCJsO0oCV0jwkzlbMsr",
-          name: "blogpost2"
-        }
-      ]
+        // {
+        //   src:
+        //     "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m",
+        //   name: "blogpost"
+        // },
+      ],
+      title_error: false,
+      content_error: false
     };
   },
+
+  watch: {
+    title() {
+      this.title_error = this.title.length == 0 ? true : false;
+    }
+  },
+
   mounted() {
-    ClassicEditor.create(this.$refs.content);
+    ClassicEditor.create(this.$refs.content).then(newEditor => {
+      this.editor = newEditor;
+    });
+  },
+
+  created() {
+    fetch(`http://localhost/jinmvc/posts/show/${this.id}`)
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.title = data.title;
+        this.editor.setData(data.content);
+        data.photos.forEach(image => {
+          this.images.push({
+            src: `http://localhost/jinmvc/public/images/${image.url}`,
+            name: image.url
+          });
+        });
+      });
   },
 
   methods: {
+    cancel() {
+      this.$router.push("/blogs");
+    },
     fileHandle(f) {
       this.files.push(f.target.files[0]);
       fileReader.onload = e => {
@@ -101,7 +138,41 @@ export default {
       });
     },
 
-    submit() {}
+    submit() {
+      let formdata = new FormData();
+      formdata.append("title", this.title);
+      formdata.append("content", this.editor.getData());
+
+      this.images.forEach(image => {
+        formdata.append("items[]", image.name);
+      });
+
+      this.files.forEach(file => {
+        formdata.append("images[]", file);
+      });
+
+      fetch(`http://localhost/jinmvc/posts/update/${this.id}`, {
+        method: "POST",
+        body: formdata
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (data.title_error) {
+            this.title_error = true;
+          }
+          if (data.content_error) {
+            this.content_error = true;
+          }
+          if (data.status == 200) {
+            this.$router.push("/blogs");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

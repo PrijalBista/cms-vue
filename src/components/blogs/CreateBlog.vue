@@ -1,26 +1,39 @@
 <template>
   <div class="container-fluid content">
-    <h4>Create Blog Posts&nbsp;&nbsp;<span>Control Panel</span></h4>
+    <h4>
+      Create Blog Post&nbsp;&nbsp;
+      <span>Control Panel</span>
+    </h4>
     <br />
     <form @submit.prevent="submit()">
       <div class="form-group">
-        <label for="title"><b>Blog Title</b></label>
+        <label for="title">
+          <b>Project Title</b>
+        </label>
         <input
           name="title"
           type="text"
+          v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
+          :class="title_error ? 'is-invalid' : ''"
         />
+        <div class="invalid-feedback">Empty Title</div>
+
         <br />
-        <label for="content"><b>Content</b></label>
+        <label for="content">
+          <b>Content</b>
+        </label>
         <div class="row">
           <div class="col-12">
             <textarea
               class="form-control"
+              :class="content_error ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
+            <div class="invalid-feedback">Empty Content</div>
           </div>
         </div>
       </div>
@@ -43,12 +56,8 @@
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">
-        Save
-      </button>
-      <button type="submit" class="btn btn-danger">
-        Cancel
-      </button>
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
 </template>
@@ -61,11 +70,25 @@ export default {
   data() {
     return {
       files: [],
-      images: []
+      images: [],
+      title: "",
+      content: "",
+      editor: null,
+      title_error: false,
+      content_error: false
     };
   },
+
+  watch: {
+    title() {
+      this.title_error = this.title.length == 0 ? true : false;
+    }
+  },
+
   mounted() {
-    ClassicEditor.create(this.$refs.content);
+    ClassicEditor.create(this.$refs.content).then(neweditor => {
+      this.editor = neweditor;
+    });
   },
 
   methods: {
@@ -90,7 +113,39 @@ export default {
       });
     },
 
-    submit() {}
+    cancel() {
+      this.$router.push("/blogs");
+    },
+
+    submit() {
+      let formdata = new FormData();
+      formdata.append("title", this.title);
+      formdata.append("content", this.editor.getData());
+      this.files.forEach(file => {
+        formdata.append("images[]", file);
+      });
+      fetch("http://localhost/jinmvc/posts/store", {
+        method: "POST",
+        body: formdata
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (data.title_error) {
+            this.title_error = true;
+          }
+          if (data.content_error) {
+            this.content_error = true;
+          }
+          if (data.status == 200) {
+            this.$router.push("/blogs");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

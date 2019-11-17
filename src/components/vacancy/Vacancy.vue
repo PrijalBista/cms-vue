@@ -1,10 +1,20 @@
 <template>
   <div class="content">
     <div class="row">
-      <h4>Vacancy&nbsp;&nbsp;<span>Control Panel</span></h4>
-      <router-link to="/vacancy/new" class="btn btn-primary ml-auto"
-        >New</router-link
-      >
+      <h4>
+        Vacancies&nbsp;&nbsp;
+        <span>Control Panel</span>
+      </h4>
+      <router-link to="/vacancies/new" class="btn btn-primary ml-auto">New</router-link>
+    </div>
+    <br />
+    <div class="input-group mr-auto">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <input type="text" class="form-control" placeholder="Search" v-model="search" />
     </div>
     <br />
     <table class="table table-striped">
@@ -18,62 +28,113 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>2019-11-01</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
+        <tr v-for="vacancy in search.length>0 ? filtered : vacancies " :key="vacancy.id">
+          <th scope="row">{{ vacancy.id }}</th>
+          <td>{{ vacancy.created_at }}</td>
           <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
+            <a href="#">{{ vacancy.title }}</a>
+          </td>
+          <td>
+            <span v-html="vacancy.content.substring(0, 100) + '...'"></span>
           </td>
 
           <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
+            <router-link :to="'/vacancies/' + vacancy.id + '/edit'">
+              <i class="far fa-edit"></i>
+            </router-link>
+            <form @submit.prevent="submit(vacancy)">
               <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>2019-11-02</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>2019-11-03</td>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates
-            tenetur mollitia...
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                <a href="#">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
               </button>
             </form>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete {{vacancy.title}}</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" @click="destroy">Confirm Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script type="text/javascript">
+export default {
+  data() {
+    return {
+      vacancies: [],
+      vacancy: {},
+      search: "",
+      filtered: []
+    };
+  },
+  watch: {
+    search() {
+      if (this.search.length > 0) {
+        this.filtered = this.vacancies.filter(vacancy => {
+          return vacancy.title
+            .toLowerCase()
+            .includes(this.search.toLowerCase());
+        });
+      }
+    }
+  },
+  created() {
+    fetch("http://localhost/jinmvc/vacancies")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.vacancies = data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+
+  methods: {
+    submit(vacancy) {
+      this.vacancy = vacancy;
+      $("#warning").modal("show");
+    },
+
+    destroy() {
+      fetch(`http://localhost/jinmvc/vacancies/destroy/${this.vacancy.id}`, {
+        method: "POST"
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if ((data.status = 200)) {
+            this.vacancies = this.vacancies.filter(vacancy => {
+              return vacancy.id !== this.vacancy.id;
+            });
+            this.filtered = this.filtered.filter(vacancy => {
+              return vacancy.id !== this.vacancy.id;
+            });
+            $("#warning").modal("hide");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .content {
@@ -90,6 +151,13 @@
       border: 0;
       background: none;
     }
+  }
+  .fa-trash-alt {
+    color: #dc3545;
+  }
+  .modal-content,
+  .input-group-prepend {
+    border-radius: 0;
   }
 }
 </style>
