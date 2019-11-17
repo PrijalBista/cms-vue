@@ -113,7 +113,6 @@ export default {
           return res.json();
         })
         .then(data => {
-          console.log(data);
           if (data.title_error) {
             this.title_error = true;
           }

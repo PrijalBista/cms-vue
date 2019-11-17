@@ -1,16 +1,25 @@
 <template>
   <div class="container-fluid content">
-    <h4>Create Carousel Media&nbsp;&nbsp;<span>Control Panel</span></h4>
+    <h4>
+      Create Carousel&nbsp;&nbsp;
+      <span>Control Panel</span>
+    </h4>
     <br />
     <form @submit.prevent="submit()">
       <div class="form-group">
-        <label for="title"><b>Carousel Title</b></label>
+        <label for="title">
+          <b>Carousel Title</b>
+        </label>
         <input
           name="title"
           type="text"
+          v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
+          :class="title_error ? 'is-invalid' : ''"
         />
+        <div class="invalid-feedback">Empty Title</div>
+
         <br />
       </div>
 
@@ -33,17 +42,15 @@
         name="file"
         @change="fileHandle"
         accept="image/*"
+        :class="image_error ? 'is-invalid' : ''"
       />
+      <div class="invalid-feedback">Empty Content</div>
 
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">
-        Save
-      </button>
-      <button type="submit" class="btn btn-danger">
-        Cancel
-      </button>
+      <button type="submit" class="btn btn-primary" :disabled="files.length == 0">Save</button>
+      <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
 </template>
@@ -55,15 +62,19 @@ export default {
   data() {
     return {
       files: [],
-      images: [
-        {
-          src:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m",
-          name: "blogpost"
-        }
-      ]
+      images: [],
+      title: "",
+      title_error: false,
+      image_error: false
     };
   },
+
+  watch: {
+    title() {
+      this.title_error = this.title.length == 0 ? true : false;
+    }
+  },
+
   methods: {
     fileHandle(f) {
       this.files.push(f.target.files[0]);
@@ -86,7 +97,36 @@ export default {
       });
     },
 
-    submit() {}
+    cancel() {
+      this.$router.push("/carousel");
+    },
+
+    submit() {
+      let formdata = new FormData();
+      formdata.append("title", this.title);
+      formdata.append("images[]", this.files[0]);
+      fetch("http://localhost/jinmvc/carousels/store", {
+        method: "POST",
+        body: formdata
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (data.title_error) {
+            this.title_error = true;
+          }
+          if (data.image_error) {
+            this.image_error = true;
+          }
+          if (data.status == 200) {
+            this.$router.push("/carousel");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

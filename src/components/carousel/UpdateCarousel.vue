@@ -1,17 +1,24 @@
 <template>
   <div class="container-fluid content">
-    <h4>Edit Carousel Media&nbsp;&nbsp;<span>Control Panel</span></h4>
+    <h4>
+      Edit Carousel&nbsp;&nbsp;
+      <span>Control Panel</span>
+    </h4>
     <br />
     <form @submit.prevent="submit()">
       <div class="form-group">
-        <label for="title"><b>Carousel Title</b></label>
+        <label for="title">
+          <b>Carousel Title</b>
+        </label>
         <input
           name="title"
           type="text"
+          v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
+          :class="title_error ? 'is-invalid' : ''"
         />
-        <br />
+        <div class="invalid-feedback">Empty Title</div>
       </div>
 
       <div id="preview">
@@ -28,22 +35,22 @@
       <br />
 
       <input
-        :disabled="files.length > 0"
         type="file"
         name="file"
         @change="fileHandle"
         accept="image/*"
+        :disabled="images.length == 1 || files.length == 1"
       />
 
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">
-        Save
-      </button>
-      <button type="submit" class="btn btn-danger">
-        Cancel
-      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        :disabled="images.length !=1 && files.length !=1"
+      >Save</button>
+      <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
 </template>
@@ -52,19 +59,47 @@
 let fileReader = new FileReader();
 
 export default {
+  props: ["id"],
   data() {
     return {
       files: [],
+      title: "",
       images: [
-        {
-          src:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m",
-          name: "blogpost"
-        }
-      ]
+        // {
+        //   src:
+        //     "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m",
+        //   name: "blogpost"
+        // },
+      ],
+      title_error: false,
+      image_error: false
     };
   },
+
+  watch: {
+    title() {
+      this.title_error = this.title.length == 0 ? true : false;
+    }
+  },
+
+  created() {
+    fetch(`http://localhost/jinmvc/carousels/show/${this.id}`)
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.title = data.title;
+        this.images.push({
+          src: `http://localhost/jinmvc/public/images/${data.url}`,
+          name: data.url
+        });
+      });
+  },
+
   methods: {
+    cancel() {
+      this.$router.push("/carousel");
+    },
     fileHandle(f) {
       this.files.push(f.target.files[0]);
       fileReader.onload = e => {
@@ -86,7 +121,33 @@ export default {
       });
     },
 
-    submit() {}
+    submit() {
+      let formdata = new FormData();
+      formdata.append("title", this.title);
+      formdata.append("images", this.files[0]);
+
+      fetch(`http://localhost/jinmvc/carousels/update/${this.id}`, {
+        method: "POST",
+        body: formdata
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (data.title_error) {
+            this.title_error = true;
+          }
+          if (data.image_error) {
+            this.image_error = true;
+          }
+          if (data.status == 200) {
+            this.$router.push("/carousel");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>
@@ -108,8 +169,8 @@ export default {
     font-weight: 700;
   }
   div {
-    width: 512px;
-    height: 256px;
+    width: 200px;
+    height: 100px;
     margin-right: 1rem;
     margin-bottom: 1rem;
     background-size: cover;

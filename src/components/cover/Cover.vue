@@ -1,7 +1,19 @@
 <template>
   <div class="content">
     <div class="row">
-      <h4>Carousel&nbsp;&nbsp;<span>Control Panel</span></h4>
+      <h4>
+        Covers&nbsp;&nbsp;
+        <span>Control Panel</span>
+      </h4>
+    </div>
+    <br />
+    <div class="input-group mr-auto">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <input type="text" class="form-control" placeholder="Search" v-model="search" />
     </div>
     <br />
     <table class="table table-striped">
@@ -14,68 +26,63 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
+        <tr v-for="photo in search.length>0 ? filtered : photos " :key="photo.id">
+          <th scope="row">{{ photo.id }}</th>
+          <td>
+            <a href="#">{{ photo.title }}</a>
+          </td>
           <td>
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m"
+              :src="`http://localhost/jinmvc/images/${photo.url}`"
               class="img-fluid"
               width="200px"
             />
           </td>
 
           <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTtU0Broqwsd5fEZ51hrnDY06eCUF-Wm_TQoYzowGadTn3NdL4m"
-              class="img-fluid"
-              width="200px"
-            />
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td><a href="#">Lorem ipsum dolor sit amet consectetur</a></td>
-          <td>
-            <img
-              src="https://neilpatel.com/wp-content/uploads/2018/10/blog.jpg"
-              class="img-fluid"
-              width="200px"
-            />
-          </td>
-          <td class="actions">
-            <a href="#"><i class="far fa-edit"></i></a>
-            <form>
-              <button type="submit">
-                <a href="#"><i class="fas fa-trash-alt"></i></a>
-              </button>
-            </form>
+            <router-link :to="'/covers/' + photo.id + '/edit'">
+              <i class="far fa-edit"></i>
+            </router-link>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
+
+<script type="text/javascript">
+export default {
+  data() {
+    return {
+      photos: [],
+      photo: {},
+      search: "",
+      filtered: []
+    };
+  },
+  watch: {
+    search() {
+      if (this.search.length > 0) {
+        this.filtered = this.photos.filter(photo => {
+          return photo.title.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
+    }
+  },
+  created() {
+    fetch("http://localhost/jinmvc/covers")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.photos = data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .content {
@@ -92,6 +99,13 @@
       border: 0;
       background: none;
     }
+  }
+  .fa-trash-alt {
+    color: #dc3545;
+  }
+  .modal-content,
+  .input-group-prepend {
+    border-radius: 0;
   }
 }
 </style>
