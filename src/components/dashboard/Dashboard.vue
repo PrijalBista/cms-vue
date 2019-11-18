@@ -9,19 +9,19 @@
       <div class="panel">
         <i class="fas fa-blog"></i>
         <span>
-          <h4>1000</h4>Blogs
+          <h4>{{posts}}</h4>Blogs
         </span>
       </div>
       <div class="panel">
         <i class="fas fa-newspaper"></i>
         <span>
-          <h4>500</h4>News
+          <h4>{{feeds}}</h4>News
         </span>
       </div>
       <div class="panel">
         <i class="fas fa-photo-video"></i>
         <span>
-          <h4>50000</h4>Pictures
+          <h4>{{photos}}</h4>Pictures
         </span>
       </div>
       <!-- <div class="panel">
@@ -33,88 +33,124 @@
       <div class="panel">
         <i class="fas fa-briefcase"></i>
         <span>
-          <h4>10</h4>Vacancy
+          <h4>{{vacancies}}</h4>Vacancy
         </span>
       </div>
       <div class="panel">
         <i class="fas fa-image"></i>
         <span>
-          <h4>5</h4>Carousel
+          <h4>{{carousels}}</h4>Carousel
         </span>
       </div>
       <div class="panel">
         <i class="fas fa-camera-retro"></i>
         <span>
-          <h4>50</h4>Covers
+          <h4>{{covers}}</h4>Covers
         </span>
       </div>
       <div class="panel">
         <i class="fas fa-tasks"></i>
         <span>
-          <h4>500</h4>Projects
+          <h4>{{projects}}</h4>Projects
         </span>
       </div>
     </div>
     <br />
+    <hr />
+    <br />
+
     <div class="row items">
-      <div class="col-sm-6 col-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Latest Blog</h5>
-            <br />
-            <img
-              src="https://specials-images.forbesimg.com/imageserve/5c0077cc31358e5b43383ffc/960x0.jpg?fit=scale"
-              class="img-fluid"
-            />
-            <br />
-            <br />
-            <h5>
-              Pilot
-              <span>-2019/11/14</span>
-            </h5>
-            <p class="card-text">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Doloribus, laboriosam fuga non magni corrupti culpa ex quod
-              beatae quas. Deleniti natus voluptatibus, molestiae culpa
-              vel excepturi minima accusantium labore atque. Lorem ipsum,
-              dolor sit amet consectetur adipisicing elit.
-            </p>
-          </div>
+      <div class="col-12">
+        <h3>Latest Blog Posts</h3>
+        <br />
+        <div class="list-group">
+          <a
+            href="#"
+            class="list-group-item list-group-item-action"
+            v-for="post in latest_posts"
+            :key="post.id"
+          >
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{post.title}}</h5>
+              <small class="text-muted">{{post.created_at}}</small>
+            </div>
+            <span class="subcontent" v-html="`${post.content.substr(0,250)}`"></span>
+          </a>
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Latest News</h5>
-            <br />
-            <img
-              src="https://www.hays.com.au/cs/groups/hays_common/@nz/@content/documents/webassets/hays_1982857.jpg"
-              class="img-fluid"
-            />
-            <br />
-            <br />
-            <h5>
-              Pilot
-              <span>-2019/11/14</span>
-            </h5>
-            <p class="card-text">
-              With supporting text below as a natural lead-in to
-              additional content. Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Perspiciatis voluptate voluptatibus dolore
-              at distinctio qui est omnis placeat non ullam esse neque
-              minus obcaecati quisquam, sequi assumenda odio molestias
-              consectetur! Lorem ipsum dolor sit amet consectetur,
-              adipisicing elit. Distinctio, quae mollitia? Exercitationem,
-              delectus. Eum, est. Animi quae, ratione non tempore rem
-              voluptatem aspernatur similique ut voluptate? Possimus
-              incidunt eaque rem.
-            </p>
-          </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+    <div class="row items">
+      <div class="col-12">
+        <h3>Latest News Feeds</h3>
+        <br />
+        <div class="list-group">
+          <a
+            href="#"
+            class="list-group-item list-group-item-action"
+            v-for="feed in latest_feeds"
+            :key="feed.id"
+          >
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{feed.title}}</h5>
+              <small class="text-muted">{{feed.created_at}}</small>
+            </div>
+            <span class="subcontent" v-html="`${feed.content.substr(0,250)}`"></span>
+          </a>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      posts: 0,
+      feeds: 0,
+      vacancies: 0,
+      photos: 0,
+      covers: 0,
+      carousels: 0,
+      projects: 0,
+
+      latest_posts: [],
+      latest_feeds: []
+    };
+  },
+
+  created() {
+    fetch(`${this.hostname}/dashboard`)
+      .then(res => res.json())
+      .then(data => {
+        this.posts = data.posts;
+        this.feeds = data.feeds;
+        this.vacancies = data.vacancies;
+        this.photos = data.photos;
+        this.covers = data.covers;
+        this.carousels = data.carousels;
+        this.projects = data.projects;
+      });
+
+    fetch(`${this.hostname}/posts/page/1`)
+      .then(res => res.json())
+      .then(data => {
+        this.latest_posts = data.data;
+      });
+
+    fetch(`${this.hostname}/feeds/page/1`)
+      .then(res => res.json())
+      .then(data => {
+        this.latest_feeds = data.data;
+      });
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .content {
@@ -160,12 +196,11 @@
   }
 
   .items {
-    .col-sm-6 {
-      padding-left: 0;
-      display: flex;
+    .col-12 {
+      padding: 0;
     }
-    .card {
-      border-radius: 0;
+    .list-group-item {
+      border-radius: 0 !important;
     }
   }
 }

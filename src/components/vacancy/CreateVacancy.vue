@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Create Vacancy&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -40,7 +41,7 @@
 
       <br />
 
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary" :disabled="busy">Save</button>
       <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
@@ -56,7 +57,8 @@ export default {
       content: "",
       editor: null,
       title_error: false,
-      content_error: false
+      content_error: false,
+      busy: false
     };
   },
 
@@ -78,10 +80,12 @@ export default {
     },
 
     submit() {
+      this.busy = true;
+
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("content", this.editor.getData());
-      fetch("http://localhost/jinmvc/vacancies/store", {
+      fetch(`${this.hostname}/vacancies/store`, {
         method: "POST",
         body: formdata
       })
@@ -98,9 +102,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/vacancies");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

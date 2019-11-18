@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Edit Vacancy Post&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -50,7 +51,7 @@
       </div>
       <br />
 
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary" :disabled="busy">Save</button>
       <button type="submit" class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
@@ -66,7 +67,8 @@ export default {
       title: "",
       title_error: false,
       content_error: false,
-      complete: 0
+      complete: 0,
+      busy: true
     };
   },
 
@@ -83,11 +85,12 @@ export default {
   },
 
   created() {
-    fetch(`http://localhost/jinmvc/vacancies/show/${this.id}`)
+    fetch(`${this.hostname}/vacancies/show/${this.id}`)
       .then(res => {
         return res.json();
       })
       .then(data => {
+        this.busy = false;
         this.complete = data.complete;
         this.title = data.title;
         this.editor.setData(data.content);
@@ -104,12 +107,13 @@ export default {
     },
 
     submit() {
+      this.busy = true;
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("complete", this.complete);
       formdata.append("content", this.editor.getData());
 
-      fetch(`http://localhost/jinmvc/vacancies/update/${this.id}`, {
+      fetch(`${this.hostname}/vacancies/update/${this.id}`, {
         method: "POST",
         body: formdata
       })
@@ -126,9 +130,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/vacancies");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

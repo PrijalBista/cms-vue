@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Create News Feed&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -56,7 +57,7 @@
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary" :disabled="busy">Save</button>
       <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
@@ -75,7 +76,8 @@ export default {
       content: "",
       editor: null,
       title_error: false,
-      content_error: false
+      content_error: false,
+      busy: false
     };
   },
 
@@ -118,13 +120,14 @@ export default {
     },
 
     submit() {
+      this.busy = true;
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("content", this.editor.getData());
       this.files.forEach(file => {
         formdata.append("images[]", file);
       });
-      fetch("http://localhost/jinmvc/feeds/store", {
+      fetch(`${this.hostname}/feeds/store`, {
         method: "POST",
         body: formdata
       })
@@ -141,9 +144,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/feeds");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

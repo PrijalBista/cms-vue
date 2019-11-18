@@ -92,7 +92,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost/jinmvc/vacancies")
+    fetch(`${this.hostname}/vacancies`)
       .then(res => {
         return res.json();
       })
@@ -111,7 +111,7 @@ export default {
     },
 
     destroy() {
-      fetch(`http://localhost/jinmvc/vacancies/destroy/${this.vacancy.id}`, {
+      fetch(`${this.hostname}/vacancies/destroy/${this.vacancy.id}`, {
         method: "POST"
       })
         .then(res => {

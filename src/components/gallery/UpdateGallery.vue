@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Edit Media&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -48,7 +49,7 @@
       <button
         type="submit"
         class="btn btn-primary"
-        :disabled="images.length !=1 && files.length !=1"
+        :disabled="(images.length !=1 && files.length !=1) || busy"
       >Save</button>
       <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
@@ -72,7 +73,8 @@ export default {
         // },
       ],
       title_error: false,
-      image_error: false
+      image_error: false,
+      busy: true
     };
   },
 
@@ -83,14 +85,15 @@ export default {
   },
 
   created() {
-    fetch(`http://localhost/jinmvc/photos/show/${this.id}`)
+    fetch(`${this.hostname}/photos/show/${this.id}`)
       .then(res => {
         return res.json();
       })
       .then(data => {
+        this.busy = false;
         this.title = data.title;
         this.images.push({
-          src: `http://localhost/jinmvc/public/images/${data.url}`,
+          src: `${this.hostname}/public/images/${data.url}`,
           name: data.url
         });
       });
@@ -122,11 +125,13 @@ export default {
     },
 
     submit() {
+      this.busy = true;
+
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("images", this.files[0]);
 
-      fetch(`http://localhost/jinmvc/photos/update/${this.id}`, {
+      fetch(`${this.hostname}/photos/update/${this.id}`, {
         method: "POST",
         body: formdata
       })
@@ -143,9 +148,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/gallery");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

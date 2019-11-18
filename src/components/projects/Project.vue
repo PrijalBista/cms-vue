@@ -92,7 +92,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost/jinmvc/projects")
+    fetch(`${this.hostname}/projects`)
       .then(res => {
         return res.json();
       })
@@ -111,7 +111,7 @@ export default {
     },
 
     destroy() {
-      fetch(`http://localhost/jinmvc/projects/destroy/${this.project.id}`, {
+      fetch(`${this.hostname}/projects/destroy/${this.project.id}`, {
         method: "POST"
       })
         .then(res => {

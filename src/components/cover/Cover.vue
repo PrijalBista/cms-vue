@@ -32,11 +32,7 @@
             <a href="#">{{ photo.title }}</a>
           </td>
           <td>
-            <img
-              :src="`http://localhost/jinmvc/images/${photo.url}`"
-              class="img-fluid"
-              width="200px"
-            />
+            <img :src="`${this.hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
           </td>
 
           <td class="actions">
@@ -70,7 +66,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost/jinmvc/covers")
+    fetch(`${this.hostname}/covers`)
       .then(res => {
         return res.json();
       })

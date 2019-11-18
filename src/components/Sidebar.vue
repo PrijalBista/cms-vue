@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <h5>
-      <img src="http://localhost/jinmvc/public/dist/theGimmickBox.png" width="25px" />
+      <img :src="`${hostname}/dist/theGimmickBox.png`" width="25px" />
       &nbsp;
       <span>Gimmick</span>
       Admin

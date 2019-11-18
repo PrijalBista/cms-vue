@@ -10,7 +10,7 @@
       </sup>
     </span>-->
     <img
-      src="http://localhost/jinmvc/public/dist/avatar.png"
+      :src="`${hostname}/dist/avatar.png`"
       alt="avatar"
       class="dropdown-toggle"
       width="35px"
@@ -20,10 +20,10 @@
       aria-expanded="false"
     />
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <a class="dropdown-item" href="#">
+      <router-link to="/account" class="dropdown-item">
         <i class="fas fa-cog"></i>
         <span>Settings</span>
-      </a>
+      </router-link>
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="#" @click="logout">
         <i class="fas fa-power-off"></i>
@@ -37,7 +37,7 @@
 export default {
   methods: {
     logout() {
-      fetch("http://localhost/jinmvc/pages/logout", {
+      fetch(`${this.hostname}/pages/logout`, {
         method: "POST"
       })
         .then(res => {
@@ -45,7 +45,7 @@ export default {
         })
         .then(data => {
           if (data.status == 200) {
-            window.location.href = "http://localhost/jinmvc";
+            window.location.href = this.hostname;
           }
         })
         .catch(err => {

@@ -91,7 +91,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost/jinmvc/feeds")
+    fetch(`${this.hostname}/feeds`)
       .then(res => {
         return res.json();
       })
@@ -110,7 +110,7 @@ export default {
     },
 
     destroy() {
-      fetch(`http://localhost/jinmvc/feeds/destroy/${this.feed.id}`, {
+      fetch(`${this.hostname}/feeds/destroy/${this.feed.id}`, {
         method: "POST"
       })
         .then(res => {

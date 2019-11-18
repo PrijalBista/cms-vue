@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Edit Blog Post&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -55,7 +56,7 @@
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary" :disabled="busy">Save</button>
       <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
@@ -80,7 +81,8 @@ export default {
         // },
       ],
       title_error: false,
-      content_error: false
+      content_error: false,
+      busy: true
     };
   },
 
@@ -97,16 +99,17 @@ export default {
   },
 
   created() {
-    fetch(`http://localhost/jinmvc/posts/show/${this.id}`)
+    fetch(`${this.hostname}/posts/show/${this.id}`)
       .then(res => {
         return res.json();
       })
       .then(data => {
+        this.busy = false;
         this.title = data.title;
         this.editor.setData(data.content);
         data.photos.forEach(image => {
           this.images.push({
-            src: `http://localhost/jinmvc/public/images/${image.url}`,
+            src: `${this.hostname}/images/${image.url}`,
             name: image.url
           });
         });
@@ -139,6 +142,7 @@ export default {
     },
 
     submit() {
+      this.busy = true;
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("content", this.editor.getData());
@@ -151,7 +155,7 @@ export default {
         formdata.append("images[]", file);
       });
 
-      fetch(`http://localhost/jinmvc/posts/update/${this.id}`, {
+      fetch(`${this.hostname}/posts/update/${this.id}`, {
         method: "POST",
         body: formdata
       })
@@ -168,9 +172,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/blogs");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

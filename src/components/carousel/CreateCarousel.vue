@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid content">
-    <h4>
+    <h4 class="d-flex">
       Create Carousel&nbsp;&nbsp;
       <span>Control Panel</span>
+      <div class="spinner-border ml-auto text-danger" v-show="busy"></div>
     </h4>
     <br />
     <form @submit.prevent="submit()">
@@ -49,7 +50,7 @@
       <br />
       <br />
 
-      <button type="submit" class="btn btn-primary" :disabled="files.length == 0">Save</button>
+      <button type="submit" class="btn btn-primary" :disabled="files.length == 0 || busy">Save</button>
       <button class="btn btn-danger" @click="cancel">Cancel</button>
     </form>
   </div>
@@ -65,7 +66,8 @@ export default {
       images: [],
       title: "",
       title_error: false,
-      image_error: false
+      image_error: false,
+      busy: false
     };
   },
 
@@ -102,10 +104,11 @@ export default {
     },
 
     submit() {
+      this.busy = true;
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("images[]", this.files[0]);
-      fetch("http://localhost/jinmvc/carousels/store", {
+      fetch(`${this.hostname}/carousels/store`, {
         method: "POST",
         body: formdata
       })
@@ -122,9 +125,11 @@ export default {
           if (data.status == 200) {
             this.$router.push("/carousel");
           }
+          this.busy = false;
         })
         .catch(err => {
           console.log(err);
+          this.busy = false;
         });
     }
   }

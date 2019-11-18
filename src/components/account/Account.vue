@@ -1,14 +1,13 @@
 <template>
   <div class="content">
     <div class="row">
-      <h4>Account Settings&nbsp;&nbsp;<span>Control Panel</span></h4>
+      <h4>
+        Account Settings&nbsp;&nbsp;
+        <span>Control Panel</span>
+      </h4>
     </div>
     <br />
-    <div
-      v-if="success"
-      class="alert alert-success alert-dismissible fade show"
-      role="alert"
-    >
+    <div v-if="success" class="alert alert-success alert-dismissible fade show" role="alert">
       Password Changed Successfully
       <button
         type="button"
@@ -19,11 +18,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div
-      v-if="fail"
-      class="alert alert-danger alert-dismissible fade show"
-      role="alert"
-    >
+    <div v-if="fail" class="alert alert-danger alert-dismissible fade show" role="alert">
       Password Change Failed
       <button
         type="button"
@@ -56,9 +51,7 @@
           v-model="confirmPassword"
         />
       </div>
-      <button type="submit" class="btn btn-primary" :disabled="!valid">
-        Change Password
-      </button>
+      <button type="submit" class="btn btn-primary" :disabled="!valid">Change Password</button>
     </form>
   </div>
 </template>
@@ -100,7 +93,7 @@ export default {
       formData.append("password", this.password);
       formData.append("confirm_password", this.confirmPassword);
 
-      fetch("http://localhost/jinmvc/pages/changePassword", {
+      fetch(`${this.hostname}/pages/changePassword`, {
         method: "POST",
         body: formData
       })

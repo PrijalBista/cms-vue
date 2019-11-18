@@ -124,5 +124,10 @@ export const routes = [
   {
     path: "/account",
     component: Account
+  },
+  //DEFAULT
+  {
+    path: "/*",
+    redirect: "/"
   }
 ];

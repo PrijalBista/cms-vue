@@ -33,11 +33,7 @@
             <a href="#">{{ photo.title }}</a>
           </td>
           <td>
-            <img
-              :src="`http://localhost/jinmvc/images/${photo.url}`"
-              class="img-fluid"
-              width="200px"
-            />
+            <img :src="`${this.hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
           </td>
 
           <td class="actions">
@@ -92,7 +88,7 @@ export default {
     }
   },
   created() {
-    fetch("http://localhost/jinmvc/carousels")
+    fetch(`${this.hostname}/carousels`)
       .then(res => {
         return res.json();
       })
@@ -111,7 +107,7 @@ export default {
     },
 
     destroy() {
-      fetch(`http://localhost/jinmvc/carousels/destroy/${this.photo.id}`, {
+      fetch(`${this.hostname}/carousels/destroy/${this.photo.id}`, {
         method: "POST"
       })
         .then(res => {
