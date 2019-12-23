@@ -6,10 +6,16 @@
     </h4>
     <br />
     <div class="stats">
-      <div class="panel">
+      <!-- <div class="panel">
         <i class="fas fa-blog"></i>
         <span>
           <h4>{{posts}}</h4>Blogs
+        </span>
+      </div>-->
+      <div class="panel">
+        <i class="far fa-envelope"></i>
+        <span>
+          <h4>{{emails}}</h4>Emails
         </span>
       </div>
       <div class="panel">
@@ -24,18 +30,18 @@
           <h4>{{photos}}</h4>Pictures
         </span>
       </div>
-      <!-- <div class="panel">
-        <i class="fas fa-envelope"></i>
-        <span>
-          <h4>500</h4>Emails
-        </span>
-      </div>-->
       <div class="panel">
+        <i class="fas fa-user-tie"></i>
+        <span>
+          <h4>{{jobs}}</h4>Jobs
+        </span>
+      </div>
+      <!-- <div class="panel">
         <i class="fas fa-briefcase"></i>
         <span>
           <h4>{{vacancies}}</h4>Vacancy
         </span>
-      </div>
+      </div>-->
       <div class="panel">
         <i class="fas fa-image"></i>
         <span>
@@ -49,9 +55,21 @@
         </span>
       </div>
       <div class="panel">
+        <i class="far fa-comment-dots"></i>
+        <span>
+          <h4>{{feedbacks}}</h4>Feedbacks
+        </span>
+      </div>
+      <!-- <div class="panel">
         <i class="fas fa-tasks"></i>
         <span>
           <h4>{{projects}}</h4>Projects
+        </span>
+      </div>-->
+      <div class="panel">
+        <i class="fas fa-download"></i>
+        <span>
+          <h4>{{shares}}</h4>Files
         </span>
       </div>
     </div>
@@ -113,11 +131,15 @@ export default {
     return {
       posts: 0,
       feeds: 0,
+      jobs: 0,
+      feedbacks: 0,
       vacancies: 0,
       photos: 0,
       covers: 0,
       carousels: 0,
       projects: 0,
+      shares: 0,
+      emails: 0,
 
       latest_posts: [],
       latest_feeds: []
@@ -130,11 +152,15 @@ export default {
       .then(data => {
         this.posts = data.posts;
         this.feeds = data.feeds;
+        this.feedbacks = data.feedbacks;
+        this.jobs = data.jobs;
         this.vacancies = data.vacancies;
         this.photos = data.photos;
         this.covers = data.covers;
         this.carousels = data.carousels;
         this.projects = data.projects;
+        this.shares = data.shares;
+        this.emails = data.emails;
       });
 
     fetch(`${this.hostname}/posts/page/1`)

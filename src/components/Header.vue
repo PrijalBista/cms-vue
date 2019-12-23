@@ -20,7 +20,7 @@
       aria-expanded="false"
     />
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <router-link to="/account" class="dropdown-item">
+      <router-link to="/accounts" class="dropdown-item">
         <i class="fas fa-cog"></i>
         <span>Settings</span>
       </router-link>

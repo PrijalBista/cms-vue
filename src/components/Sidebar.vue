@@ -14,12 +14,20 @@
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
       </router-link>
-      <router-link to="/blogs" active-class="active">
+
+      <router-link to="/emails" active-class="active">
+        <li class="list-group-item">
+          <i class="far fa-envelope"></i>&nbsp;&nbsp;Emails
+          <i class="fas fa-chevron-right ml-auto"></i>
+        </li>
+      </router-link>
+
+      <!-- <router-link to="/blogs" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-blog"></i>&nbsp;&nbsp;Blog Posts
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
-      </router-link>
+      </router-link>-->
 
       <router-link to="/feeds" active-class="active">
         <li class="list-group-item">
@@ -33,15 +41,21 @@
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
       </router-link>
-      <!-- <a href="#">
+      <router-link to="/jobs" active-class="active">
         <li class="list-group-item">
-          <i class="fas fa-envelope"></i>&nbsp;&nbsp;Emails
+          <i class="fas fa-user-tie"></i>&nbsp;&nbsp;Jobs
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
-      </a>-->
-      <router-link to="/vacancies" active-class="active">
+      </router-link>
+      <!-- <router-link to="/vacancies" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-briefcase"></i>&nbsp;&nbsp;Vacancy
+          <i class="fas fa-chevron-right ml-auto"></i>
+        </li>
+      </router-link>-->
+      <router-link to="/feedbacks" active-class="active">
+        <li class="list-group-item">
+          <i class="far fa-comment-dots"></i>&nbsp;&nbsp;Feedbacks
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
       </router-link>
@@ -57,13 +71,19 @@
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
       </router-link>
-      <router-link to="/projects" active-class="active">
+      <router-link to="/shares" active-class="active">
+        <li class="list-group-item">
+          <i class="fas fa-cloud"></i>&nbsp;&nbsp;Shares
+          <i class="fas fa-chevron-right ml-auto"></i>
+        </li>
+      </router-link>
+      <!-- <router-link to="/projects" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-tasks"></i>&nbsp;&nbsp;Projects
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
-      </router-link>
-      <router-link to="/account" active-class="active">
+      </router-link>-->
+      <router-link to="/accounts" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-user-cog"></i>&nbsp;&nbsp;Account
           <i class="fas fa-chevron-right ml-auto"></i>

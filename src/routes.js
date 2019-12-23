@@ -19,7 +19,24 @@ import UpdateCover from "./components/cover/UpdateCover";
 import Project from "./components/projects/Project";
 import CreateProject from "./components/projects/CreateProject";
 import UpdateProject from "./components/projects/UpdateProject";
-import Account from "./components/account/Account";
+
+import UpdateAccount from "./components/account/UpdateAccount";
+import CreateAccount from "./components/account/CreateAccount";
+import Accounts from "./components/account/Accounts";
+
+import Jobs from "./components/jobs/Jobs";
+import CreateJob from "./components/jobs/CreateJob";
+import UpdateJob from "./components/jobs/UpdateJob";
+
+import Feedbacks from "./components/feedbacks/Feedbacks";
+import CreateFeedback from "./components/feedbacks/CreateFeedback";
+import UpdateFeedback from "./components/feedbacks/UpdateFeedback";
+
+import Share from "./components/shares/Share.vue";
+import CreateShare from "./components/shares/CreateShare.vue";
+import UpdateShare from "./components/shares/UpdateShare.vue";
+
+import Emails from "./components/emails/Emails.vue";
 
 export const routes = [
   {
@@ -27,19 +44,19 @@ export const routes = [
     component: Dashboard
   },
   // BLOG
-  {
-    path: "/blogs",
-    component: Blogs
-  },
-  {
-    path: "/blogs/new",
-    component: CreateBlog
-  },
-  {
-    path: "/blogs/:id/edit",
-    component: UpdateBlog,
-    props: true
-  },
+  // {
+  //   path: "/blogs",
+  //   component: Blogs
+  // },
+  // {
+  //   path: "/blogs/new",
+  //   component: CreateBlog
+  // },
+  // {
+  //   path: "/blogs/:id/edit",
+  //   component: UpdateBlog,
+  //   props: true
+  // },
   // FEEDS
   {
     path: "/feeds",
@@ -69,19 +86,19 @@ export const routes = [
     props: true
   },
   //VACANCY
-  {
-    path: "/vacancies",
-    component: Vacancy
-  },
-  {
-    path: "/vacancies/new",
-    component: CreateVacancy
-  },
-  {
-    path: "/vacancies/:id/edit",
-    component: UpdateVacancy,
-    props: true
-  },
+  // {
+  //   path: "/vacancies",
+  //   component: Vacancy
+  // },
+  // {
+  //   path: "/vacancies/new",
+  //   component: CreateVacancy
+  // },
+  // {
+  //   path: "/vacancies/:id/edit",
+  //   component: UpdateVacancy,
+  //   props: true
+  // },
   //CAROUSEL
   {
     path: "/carousel",
@@ -106,28 +123,83 @@ export const routes = [
     component: UpdateCover,
     props: true
   },
-  //COVER
+  //PROJECT
+  // {
+  //   path: "/projects",
+  //   component: Project
+  // },
+  // {
+  //   path: "/projects/new",
+  //   component: CreateProject
+  // },
+  // {
+  //   path: "/projects/:id/edit",
+  //   component: UpdateProject,
+  //   props: true
+  // },
+  //JOBS
   {
-    path: "/projects",
-    component: Project
+    path: "/jobs",
+    component: Jobs
   },
   {
-    path: "/projects/new",
-    component: CreateProject
+    path: "/jobs/new",
+    component: CreateJob
   },
   {
-    path: "/projects/:id/edit",
-    component: UpdateProject,
+    path: "/jobs/:id/edit",
+    component: UpdateJob,
+    props: true
+  },
+
+  //FEEDBACKS
+  {
+    path: "/feedbacks",
+    component: Feedbacks
+  },
+  {
+    path: "/feedbacks/new",
+    component: CreateFeedback
+  },
+  {
+    path: "/feedbacks/:id/edit",
+    component: UpdateFeedback,
     props: true
   },
   //ACCOUNT
+  // {
+  //   path: "/accounts",
+  //   component: Accounts
+  // },
+  // {
+  //   path: "/accounts/new",
+  //   component: CreateAccount
+  // },
+  // {
+  //   path: "/accounts/update",
+  //   component: UpdateAccount
+  // },
+  //SHARE
   {
-    path: "/account",
-    component: Account
+    path: "/shares",
+    component: Share
+  },
+  {
+    path: "/shares/new",
+    component: CreateShare
+  },
+  {
+    path: "/shares/:id/edit",
+    component: UpdateShare,
+    props: true
+  },
+  {
+    path: "/emails",
+    component: Emails
   },
   //DEFAULT
   {
-    path: "/*",
+    path: "*",
     redirect: "/"
   }
 ];
