@@ -69,17 +69,26 @@
 
         <br />
 
-        <label for="title">
+        <label for="location">
           <b>Location</b>
         </label>
-        <input
+        <select
           name="location"
-          type="text"
-          v-model="location"
           class="form-control"
-          placeholder="United Arab Emirates"
-          :class="location_error ? 'is-invalid' : ''"
-        />
+          v-model="location"
+          :class="location_error ? 'is-invalid': ''"
+        >
+          <option disabled selected>Choose Country</option>
+          <option value="Qatar">Qatar</option>
+          <option value="Malaysia">Malaysia</option>
+          <option value="UAE">UAE</option>
+          <option value="Kuwait">Kuwait</option>
+          <option value="Oman">Oman</option>
+          <option value="Japan">Japan</option>
+          <option value="Bahrain">Bahrain</option>
+          <option value="Saudi Arabia">Saudi Arabia</option>
+          <option value="Korea">Korea</option>
+        </select>
         <div class="invalid-feedback">Empty Location</div>
 
         <br />
@@ -93,10 +102,67 @@
           v-model="industry"
           :class="industry_error ? 'is-invalid': ''"
         >
-          <option value="Welder" selected>Welder</option>
-          <option value="1">Professional level</option>
+          <option value="Supervisor">Supervisor</option>
+          <option value="Trailer Driver">Trailer Driver</option>
+          <option value="Light Driver">Light Driver</option>
+          <option value="Helper For Cook">Helper For Cook</option>
+          <option value="Continental Cook">Continental Cook</option>
+          <option value="Welder">Welder</option>
+          <option value="Mechanic">Mechanic</option>
+          <option value="Labour">Labour</option>
+          <option value="Manufacturing Worker">Manufacturing Worker</option>
+          <option value="Manicurist">Manicurist</option>
           <option value="Security Guard">Security Guard</option>
           <option value="Salesman">Salesman</option>
+          <option value="Waiter">Waiter</option>
+          <option value="Merchandiser">Merchandiser</option>
+          <option value="Car Delivery Driver">Car Delivery Driver</option>
+          <option value="Motorbike Delivery Driver">Motorbike Delivery Driver</option>
+          <option value="Regular Cook">Regular Cook</option>
+          <option value="Restaurant Helper">Restaurant Helper</option>
+          <option
+            value="Heavy Ventilation Air Condition Technician"
+          >Heavy Ventilation Air Condition Technician</option>
+          <option value="Housekeeping Attendant">Housekeeping Attendant</option>
+          <option value="Commis Chef">Commis Chef</option>
+          <option value="AC Technician">AC Technician</option>
+          <option value="Appliance Technician">Appliance Technician</option>
+          <option value="Electrician">Electrician</option>
+          <option value="Heavy Driver">Heavy Driver</option>
+          <option value="Multi Technician">Multi Technician</option>
+          <option value="Bartender">Bartender</option>
+          <option value="Head Waiter">Head Waiter</option>
+          <option value="Junior Waiter">Junior Waiter</option>
+          <option value="Barback">Barback</option>
+          <option value="Runner">Runner</option>
+          <option value="Vansalesman">Vansalesman</option>
+          <option value="Brick Mason">Brick Mason</option>
+          <option value="Factory Worker">Factory Worker</option>
+          <option value="Semi-Skilled">Semi-Skilled</option>
+          <option value="Lead Technician">Lead Technician</option>
+          <option value="Assistant Technician">Assistant Technician</option>
+          <option value="House Electrician">House Electrician</option>
+          <option value="Power Generation Electricians">Power Generation Electricians</option>
+          <option value="Accountant">Accountant</option>
+          <option value="Elevator Installers">Elevator Installers</option>
+          <option value="Packing Staff">Packing Staff</option>
+          <option value="Kitchen Crew">Kitchen Crew</option>
+          <option value="Cleaner">Cleaner</option>
+          <option value="Masseur">Masseur</option>
+          <option value="Receptionist">Receptionist</option>
+          <option value="Bakery Chef">Bakery Chef</option>
+          <option value="Junior Chef">Junior Chef</option>
+          <option value="Chef De Partie">Chef De Partie</option>
+          <option value="Supervisor">Supervisor</option>
+          <option value="Demi Chef">Demi Chef</option>
+          <option value="GMAW Welder">GMAW Welder</option>
+          <option value="Spa Therapist">Spa Therapist</option>
+          <option value="Butcher">Butcher</option>
+          <option value="Juice Maker">Juice Maker</option>
+          <option value="Fish Salesman Helper">Fish Salesman Helper</option>
+          <option value="Loading and Unloading">Loading and Unloading</option>
+          <option value="Salon Worker">Salon Worker</option>
+          <option value="Barista">Barista</option>
         </select>
 
         <br />
