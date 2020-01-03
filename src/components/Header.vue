@@ -20,11 +20,11 @@
       aria-expanded="false"
     />
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <router-link to="/accounts" class="dropdown-item">
+      <!-- <router-link to="/accounts" class="dropdown-item">
         <i class="fas fa-cog"></i>
         <span>Settings</span>
       </router-link>
-      <div class="dropdown-divider"></div>
+      <div class="dropdown-divider"></div>-->
       <a class="dropdown-item" href="#" @click="logout">
         <i class="fas fa-power-off"></i>
         <span>Logout</span>

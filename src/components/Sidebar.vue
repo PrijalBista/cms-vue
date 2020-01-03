@@ -83,12 +83,12 @@
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
       </router-link>-->
-      <router-link to="/accounts" active-class="active">
+      <!-- <router-link to="/accounts" active-class="active">
         <li class="list-group-item">
           <i class="fas fa-user-cog"></i>&nbsp;&nbsp;Account
           <i class="fas fa-chevron-right ml-auto"></i>
         </li>
-      </router-link>
+      </router-link>-->
     </ul>
   </div>
 </template>

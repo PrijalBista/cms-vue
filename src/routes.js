@@ -167,18 +167,18 @@ export const routes = [
     props: true
   },
   //ACCOUNT
-  {
-    path: "/accounts",
-    component: Accounts
-  },
-  {
-    path: "/accounts/new",
-    component: CreateAccount
-  },
-  {
-    path: "/accounts/update",
-    component: UpdateAccount
-  },
+  // {
+  //   path: "/accounts",
+  //   component: Accounts
+  // },
+  // {
+  //   path: "/accounts/new",
+  //   component: CreateAccount
+  // },
+  // {
+  //   path: "/accounts/update",
+  //   component: UpdateAccount
+  // },
   //SHARE
   {
     path: "/shares",
