@@ -43,20 +43,20 @@ export const routes = [
     path: "/",
     component: Dashboard
   },
-  // BLOG
-  // {
-  //   path: "/blogs",
-  //   component: Blogs
-  // },
-  // {
-  //   path: "/blogs/new",
-  //   component: CreateBlog
-  // },
-  // {
-  //   path: "/blogs/:id/edit",
-  //   component: UpdateBlog,
-  //   props: true
-  // },
+  //BLOG
+  {
+    path: "/blogs",
+    component: Blogs
+  },
+  {
+    path: "/blogs/new",
+    component: CreateBlog
+  },
+  {
+    path: "/blogs/:id/edit",
+    component: UpdateBlog,
+    props: true
+  },
   // FEEDS
   {
     path: "/feeds",
@@ -86,19 +86,19 @@ export const routes = [
     props: true
   },
   //VACANCY
-  // {
-  //   path: "/vacancies",
-  //   component: Vacancy
-  // },
-  // {
-  //   path: "/vacancies/new",
-  //   component: CreateVacancy
-  // },
-  // {
-  //   path: "/vacancies/:id/edit",
-  //   component: UpdateVacancy,
-  //   props: true
-  // },
+  {
+    path: "/vacancies",
+    component: Vacancy
+  },
+  {
+    path: "/vacancies/new",
+    component: CreateVacancy
+  },
+  {
+    path: "/vacancies/:id/edit",
+    component: UpdateVacancy,
+    props: true
+  },
   //CAROUSEL
   {
     path: "/carousel",
@@ -124,19 +124,19 @@ export const routes = [
     props: true
   },
   //PROJECT
-  // {
-  //   path: "/projects",
-  //   component: Project
-  // },
-  // {
-  //   path: "/projects/new",
-  //   component: CreateProject
-  // },
-  // {
-  //   path: "/projects/:id/edit",
-  //   component: UpdateProject,
-  //   props: true
-  // },
+  {
+    path: "/projects",
+    component: Project
+  },
+  {
+    path: "/projects/new",
+    component: CreateProject
+  },
+  {
+    path: "/projects/:id/edit",
+    component: UpdateProject,
+    props: true
+  },
   //JOBS
   {
     path: "/jobs",
@@ -167,18 +167,18 @@ export const routes = [
     props: true
   },
   //ACCOUNT
-  // {
-  //   path: "/accounts",
-  //   component: Accounts
-  // },
-  // {
-  //   path: "/accounts/new",
-  //   component: CreateAccount
-  // },
-  // {
-  //   path: "/accounts/update",
-  //   component: UpdateAccount
-  // },
+  {
+    path: "/accounts",
+    component: Accounts
+  },
+  {
+    path: "/accounts/new",
+    component: CreateAccount
+  },
+  {
+    path: "/accounts/update",
+    component: UpdateAccount
+  },
   //SHARE
   {
     path: "/shares",

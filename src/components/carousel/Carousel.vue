@@ -33,7 +33,7 @@
             <a href="#">{{ photo.title }}</a>
           </td>
           <td>
-            <img :src="`${hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
+            <img :src="`${$hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
           </td>
 
           <td class="actions">

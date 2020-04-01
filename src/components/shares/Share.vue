@@ -39,7 +39,7 @@
           <td>
             <ul class="p-0" style="list-style-type: none">
               <li v-for="file in share.photos" :key="file.url">
-                <a :href="`${hostname}/images/${file.url}`" target="_blank">
+                <a :href="`${$hostname}/images/${file.url}`" target="_blank">
                   <i class="fas fa-download"></i>
                   {{file.url}}
                 </a>

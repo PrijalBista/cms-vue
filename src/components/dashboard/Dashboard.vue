@@ -6,12 +6,12 @@
     </h4>
     <br />
     <div class="stats">
-      <!-- <div class="panel">
+       <div class="panel">
         <i class="fas fa-blog"></i>
         <span>
           <h4>{{posts}}</h4>Blogs
         </span>
-      </div>-->
+      </div>
       <div class="panel">
         <i class="far fa-envelope"></i>
         <span>
@@ -36,12 +36,12 @@
           <h4>{{jobs}}</h4>Jobs
         </span>
       </div>
-      <!-- <div class="panel">
+       <div class="panel">
         <i class="fas fa-briefcase"></i>
         <span>
           <h4>{{vacancies}}</h4>Vacancy
         </span>
-      </div>-->
+      </div>
       <div class="panel">
         <i class="fas fa-image"></i>
         <span>
@@ -60,12 +60,12 @@
           <h4>{{feedbacks}}</h4>Feedbacks
         </span>
       </div>
-      <!-- <div class="panel">
+       <div class="panel">
         <i class="fas fa-tasks"></i>
         <span>
           <h4>{{projects}}</h4>Projects
         </span>
-      </div>-->
+      </div>
       <div class="panel">
         <i class="fas fa-download"></i>
         <span>

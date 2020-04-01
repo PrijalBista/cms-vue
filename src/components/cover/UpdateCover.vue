@@ -92,7 +92,7 @@ export default {
         this.busy = false;
         this.title = data.title;
         this.images.push({
-          src: `${this.hostname}/images/${data.url}`,
+          src: `${this.$hostname}/images/${data.url}`,
           name: data.url
         });
       });

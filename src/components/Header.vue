@@ -10,7 +10,7 @@
       </sup>
     </span>-->
     <img
-      :src="`${hostname}/dist/avatar.png`"
+      :src="`${$hostname}/dist/avatar.png`"
       alt="avatar"
       class="dropdown-toggle"
       width="35px"
@@ -45,7 +45,7 @@ export default {
         })
         .then(data => {
           if (data.status == 200) {
-            window.location.href = this.hostname;
+            window.location.href = this.$hostname;
           }
         })
         .catch(err => {

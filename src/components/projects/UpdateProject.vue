@@ -1,3 +1,4 @@
+
 <template>
   <div class="container-fluid content">
     <h4 class="d-flex">
@@ -109,7 +110,7 @@ export default {
         this.editor.setData(data.content);
         data.photos.forEach(image => {
           this.images.push({
-            src: `${this.hostname}/public/images/${image.url}`,
+            src: `${this.$hostname}/public/images/${image.url}`,
             name: image.url
           });
         });
