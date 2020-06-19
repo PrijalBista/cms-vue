@@ -67,23 +67,6 @@
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from 'axios';
 let fileReader = new FileReader();
-class Errors {
-
-  constructor() {
-    this.errors = {};
-  }
-
-  get(field) {
-    if(this.errors[field]) {
-      return this.errors[field][0];
-    }
-  }
-
-  record(errors) {
-    this.errors = errors.errors;
-  }
-}
-
 export default {
   data() {
     return {
@@ -95,7 +78,7 @@ export default {
       title_error: false,
       content_error: false,
       busy: false,
-      errors: new Errors()
+      errors: new this.$ErrorsClass()
     };
   },
 
@@ -145,9 +128,6 @@ export default {
         formdata.append("images[]", file);
       });
       this.busy = true;
-      console.log('requesting' + `${this.hostname}/posts/store`);
-
-
       axios.post(`${this.hostname}/posts/store`, formdata)
         .then(res => {
           this.$router.push("/blogs");
@@ -156,38 +136,6 @@ export default {
           this.errors.record(err.response.data);
           this.busy = false;
         });
-      // fetch(`${this.hostname}/posts/store`, {
-      //   headers: {
-      //     'Accept': 'application/json',
-      //   },
-      //   method: "POST",
-      //   body: formdata
-      // })
-      //   .then(res => {
-      //     return res.json();
-      //   })
-      //   .then(data => {
-      //     console.log(data);
-
-      //     if (data.title_error) {
-      //       this.title_error = true;
-      //     }
-      //     if (data.content_error) {
-      //       this.content_error = true;
-      //     }
-      //     if (data.status == 200) {
-      //       this.$router.push("/blogs");
-      //     }
-      //     this.busy = false;
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //     console.log('error occured');
-      //     this.errors.record(err.response.data);
-      //     console.log('errors variable', this.errors.get('title'));
-      //     // console.log('error occured');
-      //     this.busy = false;
-      //   });
     }
   }
 };
