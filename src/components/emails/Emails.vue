@@ -63,12 +63,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/emails`)
+    this.$axios.get(`${this.hostname}/emails`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.emails = data;
+        this.emails = res.data;
       })
       .catch(err => {
         console.log(err);

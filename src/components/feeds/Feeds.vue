@@ -91,12 +91,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/feeds`)
+    this.$axios.get(`${this.hostname}/feeds`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.feeds = data;
+        this.feeds = res.data;
       })
       .catch(err => {
         console.log(err);

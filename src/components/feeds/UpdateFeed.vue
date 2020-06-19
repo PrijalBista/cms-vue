@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{ errors.get('title') }}</div>
         <br />
         <label for="content">
           <b>Content</b>
@@ -28,12 +28,12 @@
           <div class="col-12">
             <textarea
               class="form-control"
-              :class="content_error ? 'is-invalid' : ''"
+              :class="errors.get('content') ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
-            <div class="invalid-feedback">Empty Content</div>
+            <div class="invalid-feedback">{{ errors.get('content') }}</div>
           </div>
         </div>
       </div>
@@ -82,6 +82,7 @@ export default {
       ],
       title_error: false,
       content_error: false,
+      errors: new this.$ErrorsClass(),
       busy: true
     };
   },
@@ -99,21 +100,23 @@ export default {
   },
 
   created() {
-    fetch(`${this.hostname}/feeds/show/${this.id}`)
+    this.$axios.get(`${this.hostname}/feeds/show/${this.id}`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
+        let data = res.data;
         this.busy = false;
         this.title = data.title;
         this.editor.setData(data.content);
+        data.photos = data.photos ? data.photos : [];
         data.photos.forEach(image => {
           this.images.push({
             src: `${this.$hostname}/public/images/${image.url}`,
             name: image.url
           });
         });
-      });
+      })
+      .catch(err => {
+        console.log(err);
+      })
   },
 
   methods: {
@@ -156,28 +159,14 @@ export default {
         formdata.append("images[]", file);
       });
 
-      fetch(`${this.hostname}/feeds/update/${this.id}`, {
-        method: "POST",
-        body: formdata
-      })
+      this.$axios.post(`${this.hostname}/feeds/update/${this.id}`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.content_error) {
-            this.content_error = true;
-          }
-          if (data.status == 200) {
-            this.$router.push("/feeds");
-          }
           this.busy = false;
+          this.$router.push("/feeds");
         })
         .catch(err => {
+          this.errors.record(err.response.data);
           this.busy = false;
-          console.log(err);
         });
     }
   }
