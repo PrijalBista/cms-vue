@@ -65,7 +65,6 @@
 
 <script>
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import axios from 'axios';
 let fileReader = new FileReader();
 export default {
   data() {
@@ -128,7 +127,7 @@ export default {
         formdata.append("images[]", file);
       });
       this.busy = true;
-      axios.post(`${this.hostname}/posts/store`, formdata)
+      this.$axios.post(`${this.hostname}/posts/store`, formdata)
         .then(res => {
           this.$router.push("/blogs");
         })
