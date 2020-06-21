@@ -33,7 +33,7 @@
             <a href="#">{{ photo.title }}</a>
           </td>
           <td>
-            <img :src="`${$hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
+            <img :src="`${$hostname}${photo.photo_url}`" class="img-fluid" width="200px" />
           </td>
 
           <td class="actions">
@@ -88,12 +88,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/photos`)
+    this.$axios.get(`${this.hostname}/photos`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.photos = data;
+        this.photos = res.data;
       })
       .catch(err => {
         console.log(err);
