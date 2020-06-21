@@ -109,8 +109,8 @@ export default {
         data.photos = data.photos ? data.photos: [];
         data.photos.forEach(image => {
           this.images.push({
-            src: `${this.$hostname}/images/${image.url}`,
-            name: image.url
+            src: `${this.$hostname}${image.photo_url}`,
+            name: image.title
           });
         });
       })
