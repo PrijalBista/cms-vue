@@ -23,7 +23,16 @@
 
         <br />
       </div>
-
+      <div class="form-group">
+        <label for="tags">
+          <b>Add Tags For Media</b>
+        </label>
+        <vue-tags-input
+          v-model="tag"
+          :tags="tags"
+          @tags-changed="newTags => tags = newTags"
+        />
+      </div>
       <div id="preview">
         <div
           v-for="image in images"
@@ -57,6 +66,7 @@
 </template>
 
 <script>
+import VueTagsInput from '@johmun/vue-tags-input';
 let fileReader = new FileReader();
 
 export default {
@@ -68,7 +78,9 @@ export default {
       title_error: false,
       image_error: false,
       errors : new this.$ErrorsClass(),
-      busy: false
+      busy: false,
+      tag: '',
+      tags: [],
     };
   },
 
@@ -109,7 +121,9 @@ export default {
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("images[]", this.files[0]);
-
+      if(this.tags.length > 0) {
+        formdata.append('tags', this.tags.map(el => el.text).join()); // tag1,tag2,tag3
+      }
       this.$axios.post(`${this.hostname}/photos/store`, formdata)
         .then(res => {
           this.busy = false;
@@ -120,6 +134,10 @@ export default {
           this.busy = false;
         });
     }
+  },
+
+  components: {
+    VueTagsInput,
   }
 };
 </script>

@@ -104,22 +104,15 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/photos/destroy/${this.photo.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/photos/destroy/${this.photo.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
-            this.photos = this.photos.filter(photo => {
-              return photo.id !== this.photo.id;
-            });
-            this.filtered = this.filtered.filter(photo => {
-              return photo.id !== this.photo.id;
-            });
-            $("#warning").modal("hide");
-          }
+          this.photos = this.photos.filter(photo => {
+            return photo.id !== this.photo.id;
+          });
+          this.filtered = this.filtered.filter(photo => {
+            return photo.id !== this.photo.id;
+          });
+          $("#warning").modal("hide");
         })
         .catch(err => {
           console.log(err);
