@@ -92,12 +92,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/projects`)
+    this.$axios.get(`${this.hostname}/projects`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.projects = data;
+        this.projects = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -111,14 +108,9 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/projects/destroy/${this.project.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/projects/destroy/${this.project.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.projects = this.projects.filter(project => {
               return project.id !== this.project.id;
             });
