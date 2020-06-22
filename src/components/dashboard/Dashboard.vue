@@ -147,9 +147,9 @@ export default {
   },
 
   created() {
-    fetch(`${this.hostname}/dashboard`)
-      .then(res => res.json())
-      .then(data => {
+    this.$axios.get(`${this.hostname}/dashboard`)
+      .then(res => {
+        let data = res.data;
         this.posts = data.posts;
         this.feeds = data.feeds;
         this.feedbacks = data.feedbacks;
@@ -161,18 +161,25 @@ export default {
         this.projects = data.projects;
         this.shares = data.shares;
         this.emails = data.emails;
+      })
+      .catch(err => {
+        console.log(err);
       });
 
-    fetch(`${this.hostname}/posts/page/1`)
-      .then(res => res.json())
-      .then(data => {
-        this.latest_posts = data.data;
+    this.$axios.get(`${this.hostname}/posts/page`)
+      .then(res => {
+        this.latest_posts = res.data.data;
+      })
+      .catch(err => {
+        console.log(err);
       });
 
-    fetch(`${this.hostname}/feeds/page/1`)
-      .then(res => res.json())
-      .then(data => {
-        this.latest_feeds = data.data;
+    this.$axios.get(`${this.hostname}/feeds/page`)
+      .then(res => {
+        this.latest_feeds = res.data.data;
+      })
+      .catch(err => {
+        console.log(err);
       });
   }
 };
