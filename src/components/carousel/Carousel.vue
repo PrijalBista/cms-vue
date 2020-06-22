@@ -33,7 +33,7 @@
             <a href="#">{{ photo.title }}</a>
           </td>
           <td>
-            <img :src="`${$hostname}/images/${photo.url}`" class="img-fluid" width="200px" />
+            <img :src="`${$hostname}${photo.photo_url}`" class="img-fluid" width="200px" />
           </td>
 
           <td class="actions">
@@ -88,12 +88,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/carousels`)
+    this.$axios.get(`${this.hostname}/carousels`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.photos = data;
+        this.photos = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -107,14 +104,9 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/carousels/destroy/${this.photo.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/carousels/destroy/${this.photo.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.photos = this.photos.filter(photo => {
               return photo.id !== this.photo.id;
             });

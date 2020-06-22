@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{errors.get('title')}}</div>
       </div>
 
       <div id="preview">
@@ -74,7 +74,8 @@ export default {
       ],
       title_error: false,
       image_error: false,
-      busy: true
+      busy: true,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -85,17 +86,18 @@ export default {
   },
 
   created() {
-    fetch(`${this.hostname}/carousels/show/${this.id}`)
+    this.$axios.get(`${this.hostname}/carousels/show/${this.id}`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
         this.busy = false;
+        let data = res.data;
         this.title = data.title;
         this.images.push({
-          src: `${this.$hostname}/images/${data.url}`,
-          name: data.url
+          src: `${this.$hostname}${data.photo_url}`,
+          name: data.title
         });
+      })
+      .catch(err => {
+        console.log(err);
       });
   },
 
@@ -128,29 +130,18 @@ export default {
       this.busy = true;
       let formdata = new FormData();
       formdata.append("title", this.title);
-      formdata.append("images", this.files[0]);
-
-      fetch(`${this.hostname}/carousels/update/${this.id}`, {
-        method: "POST",
-        body: formdata
-      })
+      if(this.files[0]) {
+        formdata.append("image", this.files[0]);
+      }
+      this.$axios.post(`${this.hostname}/carousels/update/${this.id}`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.image_error) {
-            this.image_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/carousel");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
           this.busy = false;
         });
     }

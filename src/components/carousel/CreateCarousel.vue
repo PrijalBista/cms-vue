@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{errors.get('title')}}</div>
 
         <br />
       </div>
@@ -67,7 +67,8 @@ export default {
       title: "",
       title_error: false,
       image_error: false,
-      busy: false
+      busy: false,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -108,27 +109,16 @@ export default {
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("images[]", this.files[0]);
-      fetch(`${this.hostname}/carousels/store`, {
-        method: "POST",
-        body: formdata
-      })
+
+      this.$axios.post(`${this.hostname}/carousels/store`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.image_error) {
-            this.image_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/carousel");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
           this.busy = false;
         });
     }
