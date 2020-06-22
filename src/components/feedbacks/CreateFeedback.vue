@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{errors.get('title')}}</div>
 
         <br />
         <label for="content">
@@ -29,12 +29,12 @@
           <div class="col-12">
             <textarea
               class="form-control"
-              :class="content_error ? 'is-invalid' : ''"
+              :class="errors.get('content') ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
-            <div class="invalid-feedback">Empty Content</div>
+            <div class="invalid-feedback">{{errors.get('content')}}</div>
           </div>
         </div>
       </div>
@@ -77,7 +77,8 @@ export default {
       editor: null,
       title_error: false,
       content_error: false,
-      busy: false
+      busy: false,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -127,27 +128,16 @@ export default {
       this.files.forEach(file => {
         formdata.append("images[]", file);
       });
-      fetch(`${this.hostname}/feedbacks/store`, {
-        method: "POST",
-        body: formdata
-      })
+
+      this.$axios.post(`${this.hostname}/feedbacks/store`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.content_error) {
-            this.content_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/feedbacks");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
           this.busy = false;
         });
     }

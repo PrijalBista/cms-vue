@@ -93,12 +93,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/feedbacks`)
+    this.$axios.get(`${this.hostname}/feedbacks`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.feedbacks = data;
+        this.feedbacks = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -112,14 +109,10 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/feedbacks/destroy/${this.feedback.id}`, {
-        method: "POST"
-      })
+
+      this.$axios.post(`${this.hostname}/feedbacks/destroy/${this.feedback.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.feedbacks = this.feedbacks.filter(feedback => {
               return feedback.id !== this.feedback.id;
             });
