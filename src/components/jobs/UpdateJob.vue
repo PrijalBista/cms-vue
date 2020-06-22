@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{errors.get('title')}}</div>
 
         <br />
 
@@ -31,9 +31,9 @@
           type="date"
           v-model="lastDate"
           class="form-control"
-          :class="lastDate_error ? 'is-invalid': ''"
+          :class="errors.get('lastDate') ? 'is-invalid': ''"
         />
-        <div class="invalid-feedback">Empty Last Application Date</div>
+        <div class="invalid-feedback">{{errors.get('lastDate')}}</div>
 
         <br />
 
@@ -46,9 +46,9 @@
           v-model="offeredSalary"
           class="form-control"
           placeholder="NRP 10000 - 50000"
-          :class="offeredSalary_error ? 'is-invalid' : ''"
+          :class="errors.get('offeredSalary') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Offered Salary</div>
+        <div class="invalid-feedback">{{errors.get('offeredSalary')}}</div>
 
         <br />
 
@@ -59,7 +59,7 @@
           name="careerLevel"
           class="form-control"
           v-model="careerLevel"
-          :class="careerLevel_error ? 'is-invalid': ''"
+          :class="errors.get('careerLevel') ? 'is-invalid': ''"
         >
           <option value="Entry Level" selected>Entry Level</option>
           <option value="Professional level">Professional level</option>
@@ -76,7 +76,7 @@
           name="location"
           class="form-control"
           v-model="location"
-          :class="location_error ? 'is-invalid': ''"
+          :class="errors.get('location') ? 'is-invalid': ''"
         >
           <option disabled selected>Choose Country</option>
           <option value="Qatar">Qatar</option>
@@ -89,7 +89,7 @@
           <option value="Saudi Arabia">Saudi Arabia</option>
           <option value="Korea">Korea</option>
         </select>
-        <div class="invalid-feedback">Empty Location</div>
+        <div class="invalid-feedback">{{errors.get('location')}}</div>
 
         <br />
 
@@ -100,7 +100,7 @@
           name="industry"
           class="form-control"
           v-model="industry"
-          :class="industry_error ? 'is-invalid': ''"
+          :class="errors.get('industry') ? 'is-invalid': ''"
         >
                           <option value="Labour">Labour</option>
                 <option value="Cleaner">Cleaner</option>
@@ -253,7 +253,7 @@
           name="experience"
           class="form-control"
           v-model="experience"
-          :class="experience_error ? 'is-invalid': ''"
+          :class="errors.get('experience') ? 'is-invalid': ''"
         >
           <option value="0" selected>0 years</option>
           <option value="1">1 year</option>
@@ -277,12 +277,12 @@
           <div class="col-12">
             <textarea
               class="form-control"
-              :class="content_error ? 'is-invalid' : ''"
+              :class="errors.get('content') ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
-            <div class="invalid-feedback">Empty Content</div>
+            <div class="invalid-feedback">{{errors.get('content')}}</div>
           </div>
         </div>
       </div>
@@ -343,7 +343,8 @@ export default {
       industry_error: false,
       experience_error: false,
       content_error: false,
-      busy: true
+      busy: true,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -378,11 +379,9 @@ export default {
   },
 
   created() {
-    fetch(`${this.hostname}/jobs/show/${this.id}`)
+    this.$axios.get(`${this.hostname}/jobs/show/${this.id}`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
+        let data = res.data;
         this.busy = false;
         this.title = data.title;
         this.lastDate = data.lastDate;
@@ -394,10 +393,13 @@ export default {
         this.editor.setData(data.content);
         data.photos.forEach(image => {
           this.images.push({
-            src: `${this.hostname}/images/${image.url}`,
-            name: image.url
+            src: `${this.$hostname}${image.photo_url}`,
+            name: image.title
           });
         });
+      })
+      .catch(err => {
+        console.log(err);
       });
   },
 
@@ -446,45 +448,15 @@ export default {
         formdata.append("images[]", file);
       });
 
-      fetch(`${this.hostname}/jobs/update/${this.id}`, {
-        method: "POST",
-        body: formdata
-      })
+      this.$axios.post(`${this.hostname}/jobs/update/${this.id}`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.lastDate_error) {
-            this.lastDate_error = true;
-          }
-          if (data.offeredSalary_error) {
-            this.offeredSalary_error = true;
-          }
-          if (data.careerLevel_error) {
-            this.careerLevel_error = true;
-          }
-          if (data.location_error) {
-            this.location_error = true;
-          }
-          if (data.industry_error) {
-            this.industry_error = true;
-          }
-          if (data.experience_error) {
-            this.experience_error = true;
-          }
-          if (data.content_error) {
-            this.content_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/jobs");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
           this.busy = false;
         });
     }

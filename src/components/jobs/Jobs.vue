@@ -114,12 +114,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/jobs`)
+    this.$axios.get(`${this.hostname}/jobs`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.jobs = data;
+        this.jobs = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -133,22 +130,15 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/jobs/destroy/${this.job.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/jobs/destroy/${this.job.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
-            this.jobs = this.jobs.filter(job => {
-              return job.id !== this.job.id;
-            });
-            this.filtered = this.filtered.filter(job => {
-              return job.id !== this.job.id;
-            });
-            $("#warning").modal("hide");
-          }
+          this.jobs = this.jobs.filter(job => {
+            return job.id !== this.job.id;
+          });
+          this.filtered = this.filtered.filter(job => {
+            return job.id !== this.job.id;
+          });
+          $("#warning").modal("hide");
         })
         .catch(err => {
           console.log(err);
