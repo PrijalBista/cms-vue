@@ -17,9 +17,9 @@
           v-model="title"
           class="form-control"
           placeholder="Lorem ipsum dolor sit amet consectetur"
-          :class="title_error ? 'is-invalid' : ''"
+          :class="errors.get('title') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Title</div>
+        <div class="invalid-feedback">{{errors.get('title')}}</div>
         <br />
         <label for="content">
           <b>Content</b>
@@ -28,12 +28,12 @@
           <div class="col-12">
             <textarea
               class="form-control"
-              :class="content_error ? 'is-invalid' : ''"
+              :class="errors.get('content') ? 'is-invalid' : ''"
               name="content"
               id="editor"
               ref="content"
             ></textarea>
-            <div class="invalid-feedback">Empty Content</div>
+            <div class="invalid-feedback">{{errors.get('content')}}</div>
           </div>
         </div>
       </div>
@@ -68,7 +68,8 @@ export default {
       title_error: false,
       content_error: false,
       complete: 0,
-      busy: true
+      busy: true,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -85,15 +86,16 @@ export default {
   },
 
   created() {
-    fetch(`${this.hostname}/vacancies/show/${this.id}`)
+    this.$axios(`${this.hostname}/vacancies/show/${this.id}`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
         this.busy = false;
+        let data = res.data;
         this.complete = data.complete;
         this.title = data.title;
         this.editor.setData(data.content);
+      })
+      .catch(err => {
+        console.log(err);
       });
   },
 
@@ -113,27 +115,15 @@ export default {
       formdata.append("complete", this.complete);
       formdata.append("content", this.editor.getData());
 
-      fetch(`${this.hostname}/vacancies/update/${this.id}`, {
-        method: "POST",
-        body: formdata
-      })
+      this.$axios.post(`${this.hostname}/vacancies/update/${this.id}`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.title_error) {
-            this.title_error = true;
-          }
-          if (data.content_error) {
-            this.content_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/vacancies");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
           this.busy = false;
         });
     }
