@@ -102,12 +102,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/shares`)
+    this.$axios.get(`${this.hostname}/shares`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.shares = data;
+        this.shares = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -121,14 +118,9 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/shares/destroy/${this.share.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/shares/destroy/${this.share.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.shares = this.shares.filter(share => {
               return share.id !== this.share.id;
             });
