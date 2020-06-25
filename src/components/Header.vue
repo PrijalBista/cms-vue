@@ -43,8 +43,6 @@ export default {
         if (res.status == 200) {
           localStorage.removeItem('authUser');
           this.$axios.defaults.headers.common = {};
-          this.$axios.get(`${this.hostname}/dashboard`)
-            .then(res => console.log(res.data));
           // window.location.href = this.$hostname;
           this.$router.replace('/login');
         }
