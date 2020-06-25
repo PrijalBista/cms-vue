@@ -38,7 +38,19 @@
           </div>
         </div>
       </div>
-
+      <br />
+      <div class="custom-control custom-checkbox">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="complete"
+          name="complete"
+          :checked="complete == 1"
+          @click="toggle"
+        />
+        <label class="custom-control-label" for="complete">Complete</label>
+      </div>
+      <br />
       <div id="preview">
         <div
           v-for="image in images"
@@ -74,6 +86,7 @@ export default {
       files: [],
       editor: null,
       title: "",
+      complete: 0,
       images: [
         // {
         //   src:
@@ -107,6 +120,7 @@ export default {
         let data = res.data;
         this.title = data.title;
         this.editor.setData(data.content);
+        this.complete = data.complete;
         data.photos.forEach(image => {
           this.images.push({
             src: `${this.$hostname}${image.photo_url}`,
@@ -149,6 +163,7 @@ export default {
       let formdata = new FormData();
       formdata.append("title", this.title);
       formdata.append("content", this.editor.getData());
+      formdata.append("complete", this.complete);
 
       this.images.forEach(image => {
         formdata.append("items[]", image.name);
@@ -169,7 +184,11 @@ export default {
           this.errors.record(err.response.data);
           this.busy = false;
         });
-    }
+    },
+
+    toggle() {
+      this.complete = 1 - this.complete;
+    },
   }
 };
 </script>
