@@ -38,6 +38,8 @@ import UpdateShare from "./components/shares/UpdateShare.vue";
 
 import Emails from "./components/emails/Emails.vue";
 
+import Login from "./components/auth/Login.vue";
+
 export const routes = [
   {
     path: "/",
@@ -197,9 +199,14 @@ export const routes = [
     path: "/emails",
     component: Emails
   },
+  //LOGIN
+  {
+    path: "/login",
+    component: Login
+  },
   //DEFAULT
   {
     path: "*",
     redirect: "/"
-  }
+  },
 ];
