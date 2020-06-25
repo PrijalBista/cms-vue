@@ -47,6 +47,11 @@
 <script>
 	export default {
 		
+		created() {
+			const authUser = JSON.parse(localStorage.getItem('authUser'));
+			if(authUser && authUser.accessToken) this.$router.push('/');
+		},
+
 		data() {
 			return {
 				email: '',
@@ -65,6 +70,10 @@
 					.then(res => {
 						if(res.status === 200) {
 							localStorage.setItem('authUser', JSON.stringify(res.data));
+							// set the bearer token in axios globally 
+							// axios.defaults.headers.common = {'Authorization': `bearer ${token}`}
+							this.$axios.defaults.headers.common = {'Authorization': `Bearer ${res.data.accessToken}`};
+							this.$router.replace('/');
 						}
 					})
 					.catch(err => {

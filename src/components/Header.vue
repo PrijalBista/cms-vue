@@ -37,20 +37,20 @@
 export default {
   methods: {
     logout() {
-      fetch(`${this.hostname}/pages/logout`, {
-        method: "POST"
+      this.$axios.post(`${this.hostname}/users/logout`)
+      .then(res => {
+        if (res.status == 200) {
+          localStorage.removeItem('authUser');
+          this.$axios.defaults.headers.common = {};
+          this.$axios.get(`${this.hostname}/dashboard`)
+            .then(res => console.log(res.data));
+          // window.location.href = this.$hostname;
+          this.$router.replace('/login');
+        }
       })
-        .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.status == 200) {
-            window.location.href = this.$hostname;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      .catch(err => {
+        console.log(err);
+      });
     }
   }
 };

@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div class="container-fluid wrapper">
-      <app-sidebar></app-sidebar>
+      <app-sidebar v-if="$route.name != 'Login'" ></app-sidebar>
       <div class="wrap">
-        <app-header></app-header>
+        <app-header v-if="$route.name != 'Login'" ></app-header>
         <router-view></router-view>
       </div>
     </div>

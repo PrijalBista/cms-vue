@@ -202,7 +202,8 @@ export const routes = [
   //LOGIN
   {
     path: "/login",
-    component: Login
+    component: Login,
+    name: 'Login'
   },
   //DEFAULT
   {
