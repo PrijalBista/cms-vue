@@ -18,6 +18,8 @@
 		            :class=" errors.get('password') ? 'is-invalid' : '' " id="password" placeholder="Password">
 		            <div class="invalid-feedback">{{ errors.get('password') }}</div>
 		        </div>
+
+		        <div class="text-danger text-center my-2" style="font-size: 80%;">{{ errors.get('auth_fail') }}</div>
 		        <button type="submit" class="btn btn-primary btn-block">Login</button>
 		    </form>
 		</div>
