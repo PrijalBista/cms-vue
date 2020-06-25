@@ -72,7 +72,7 @@
 							localStorage.setItem('authUser', JSON.stringify(res.data));
 							// set the bearer token in axios globally 
 							// axios.defaults.headers.common = {'Authorization': `bearer ${token}`}
-							this.$axios.defaults.headers.common = {'Authorization': `Bearer ${res.data.accessToken}`};
+							this.$axios.defaults.headers.common = {'Accept': 'application/json', 'Authorization': `Bearer ${res.data.accessToken}`};
 							this.$router.replace('/');
 						}
 					})

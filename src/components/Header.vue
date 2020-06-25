@@ -42,7 +42,7 @@ export default {
       .then(res => {
         if (res.status == 200) {
           localStorage.removeItem('authUser');
-          this.$axios.defaults.headers.common = {};
+          this.$axios.defaults.headers.common = {'Accept': 'application/json'};
           // window.location.href = this.$hostname;
           this.$router.replace('/login');
         }

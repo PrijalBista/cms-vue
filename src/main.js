@@ -14,7 +14,7 @@ Vue.prototype.$axios = axios;
 // Set Bearer token if logged in
 const authUser = JSON.parse(localStorage.getItem('authUser'));
 if(authUser && authUser.accessToken) {
-	Vue.prototype.$axios.defaults.headers.common = {'Authorization': `Bearer ${authUser.accessToken}`};
+	Vue.prototype.$axios.defaults.headers.common = {'Accept': 'application/json', 'Authorization': `Bearer ${authUser.accessToken}`};
 }
 
 // Vue.prototype.hostname = "http://127.0.0.1/cms-php/api";
