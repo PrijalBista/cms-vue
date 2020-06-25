@@ -1,14 +1,15 @@
 <template>
   <nav class="navbar navbar-dark">
     <span class="navbar-brand mb-0 mr-auto">
-      <i class="fas fa-bars"></i>
+      <!-- <i class="fas fa-bars"></i> -->
     </span>
-    <!-- <span class="navbar-brand mb-0 ml-auto">
+<!--      <span class="navbar-brand mb-0 ml-auto">
       <i class="fas fa-envelope"></i>
       <sup>
         <span class="badge badge-danger">10</span>
       </sup>
-    </span>-->
+    </span> -->
+    <span class="text-white mr-1">{{userName}}</span>
     <img
       :src="`${$hostname}/dist/avatar.png`"
       alt="avatar"
@@ -51,6 +52,12 @@ export default {
       .catch(err => {
         console.log(err);
       });
+    }
+  },
+  computed: {
+    userName() {
+      const authUser = JSON.parse(localStorage.getItem('authUser'));
+      return authUser ? authUser.userName : '';
     }
   }
 };

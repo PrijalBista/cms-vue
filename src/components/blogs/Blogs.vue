@@ -106,14 +106,9 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/posts/destroy/${this.post.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/posts/destroy/${this.post.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.posts = this.posts.filter(post => {
               return post.id !== this.post.id;
             });
