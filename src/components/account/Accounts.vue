@@ -41,13 +41,16 @@
           <td>{{user.role}}</td>
 
           <td class="actions">
-            <form @submit.prevent="submit(user)">
+            <form v-if="user.email !== userEmail" @submit.prevent="submit(user)">
               <button type="submit">
                 <a href="#">
                   <i class="fas fa-trash-alt"></i>
                 </a>
               </button>
             </form>
+            <button v-else class="disabled-button"  disabled>
+              <i class="fas fa-trash-alt" style="color: #d3d3d3;"></i>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -121,6 +124,12 @@ export default {
           console.log(err);
         });
     }
+  },
+  computed: {
+    userEmail() {
+      const authUser = JSON.parse(localStorage.getItem('authUser'));
+      return authUser ? authUser.userEmail : '';
+    }
   }
 };
 </script>
@@ -140,6 +149,10 @@ export default {
       border: 0;
       background: none;
     }
+  }
+  .disabled-button {
+    border: 0;
+    background: none;
   }
   .fa-trash-alt {
     color: #dc3545;
