@@ -19,9 +19,9 @@
           v-model="name"
           class="form-control"
           placeholder="John Doe"
-          :class="name_error ? 'is-invalid' : ''"
+          :class="errors.get('name') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Name</div>
+        <div class="invalid-feedback">{{ errors.get('name') }}</div>
 
         <br />
 
@@ -34,9 +34,9 @@
           v-model="email"
           class="form-control"
           placeholder="example@domain.com"
-          :class="email_error ? 'is-invalid' : ''"
+          :class="errors.get('email') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Email</div>
+        <div class="invalid-feedback">{{ errors.get('email') }}</div>
 
         <br />
 
@@ -57,9 +57,9 @@
           type="text"
           v-model="password"
           class="form-control"
-          :class="password_error ? 'is-invalid' : ''"
+          :class="errors.get('password') ? 'is-invalid' : ''"
         />
-        <div class="invalid-feedback">Empty Password</div>
+        <div class="invalid-feedback">{{ errors.get('password') }}</div>
       </div>
 
       <br />
@@ -82,7 +82,8 @@ export default {
       name_error: false,
       email_error: false,
       password_error: false,
-      fail: false
+      fail: false,
+      errors: new this.$ErrorsClass(),
     };
   },
 
@@ -111,35 +112,23 @@ export default {
       formdata.append("role", this.role);
       formdata.append("email", this.email);
       formdata.append("password", this.password);
-      fetch(`${this.hostname}/pages/create`, {
-        method: "POST",
-        body: formdata
-      })
+
+      this.$axios.post(`${this.hostname}/users/store`, formdata)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.name_error) {
-            this.name_error = true;
-          }
-          if (data.email_error) {
-            this.email_error = true;
-          }
-          if (data.password_error) {
-            this.password_error = true;
-          }
-          if (data.status == 200) {
+          this.busy = false;
+          if (res.status == 200) {
             this.$router.push("/accounts");
           }
-          this.busy = false;
         })
         .catch(err => {
-          console.log(err);
+          this.errors.record(err.response.data);
+          this.busy = false;
+
           this.fail = true;
           setTimeout(() => {
             this.fail = false;
           }, 2000);
-          this.busy = false;
+
         });
     }
   }

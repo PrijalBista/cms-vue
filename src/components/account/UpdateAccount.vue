@@ -34,8 +34,9 @@
           id="text"
           placeholder="John Doe"
           v-model="name"
-          :class="name_err ? 'is-invalid' : ''"
+          :class="errors.get('name') ? 'is-invalid' : ''"
         />
+        <div class="invalid-feedback">{{ errors.get('name') }}</div>
       </div>
 
       <div class="form-group">
@@ -61,11 +62,12 @@
         <input
           type="password"
           class="form-control"
-          :class="confirmPassword_err ? 'is-invalid' : ''"
+          :class="errors.get('password') ? 'is-invalid' : ''"
           id="confirm-password"
           placeholder="Confirm Password"
           v-model="confirmPassword"
         />
+        <div class="invalid-feedback">{{ errors.get('password') }}</div>
       </div>
       <button type="submit" class="btn btn-primary" :disabled="!isValid">Update Account</button>
     </form>
@@ -85,7 +87,8 @@ export default {
       confirmPassword_err: false,
       name_err: false,
       success: false,
-      fail: false
+      fail: false,
+      errors: new this.$ErrorsClass(),
     };
   },
   computed: {
@@ -104,19 +107,11 @@ export default {
       formData.append("name", this.name);
       formData.append("role", this.role);
       formData.append("password", this.password);
-      formData.append("confirm_password", this.confirmPassword);
+      formData.append("password_confirmation", this.confirmPassword);
 
-      fetch(`${this.hostname}/pages/update`, {
-        method: "POST",
-        body: formData
-      })
+      this.$axios.post(`${this.hostname}/users/update/${this.id}`, formData)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          this.name_err = data.name_err;
-          this.confirmPassword_err = data.confirmPassword_err;
-          if (data.status == 200) {
+          if (res.status == 200) {
             this.password = "";
             this.confirmPassword = "";
             this.id = null;
@@ -126,17 +121,16 @@ export default {
             setTimeout(() => {
               this.success = false;
             }, 2000);
-          } else if (data.status == 500) {
-            this.fail = true;
-            setTimeout(() => {
-              this.fail = false;
-            }, 2000);
           }
         })
         .catch(err => {
+          this.errors.record(err.response.data);
           this.fail = true;
-          console.log(err);
+          setTimeout(() => {
+            this.fail = false;
+          }, 2000);
         });
+
     },
 
     updateAccount() {
@@ -149,12 +143,13 @@ export default {
   },
 
   mounted() {
-    fetch(`${this.hostname}/pages/users`)
+
+    this.$axios.get(`${this.hostname}/users`)
       .then(res => {
-        return res.json();
+        this.users = res.data;
       })
-      .then(data => {
-        this.users = data;
+      .catch(err => {
+        console.log(err);
       });
   }
 };

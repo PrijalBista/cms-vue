@@ -89,12 +89,9 @@ export default {
     }
   },
   created() {
-    fetch(`${this.hostname}/pages/users`)
+    this.$axios.get(`${this.hostname}/users`)
       .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.users = data;
+        this.users = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -108,14 +105,9 @@ export default {
     },
 
     destroy() {
-      fetch(`${this.hostname}/users/destroy/${this.user.id}`, {
-        method: "POST"
-      })
+      this.$axios.post(`${this.hostname}/users/destroy/${this.user.id}`)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if ((data.status = 200)) {
+          if ((res.status = 200)) {
             this.users = this.users.filter(user => {
               return user.id !== this.user.id;
             });
